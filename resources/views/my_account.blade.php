@@ -6,7 +6,7 @@
 	{
 		prepareLocale();
 
-		$('.fa-edit').click(function()
+		$('.edit-bank').click(function()
 		{
 			$('#modal-bank').modal('show');
 		});
@@ -42,6 +42,8 @@
             processData:false,
             success: function(data)
             {
+            	data = JSON.parse(data);
+            	
             	if(data.status == 1)
             	{
             		alert(locale['success']);
@@ -74,32 +76,37 @@
 	}
 </script>
 <style>
-	.card
+	.page-title
 	{
-		border: none;
-		background: transparent;
+		background:#27273F;
+		font-size:16px;
+		font-weight: bold;
 	}
-	.card-header
-	{
-		background: linear-gradient(180deg,#131228,#140133);
 
+	.field-title
+	{
+		color:black;
+		font-weight: bold;
+		font-size:14px;
+		margin-bottom: 10px;
 	}
-	.ditto-card-body
+
+	.cred
     {
-        background: #23214a;
-        border: 2px solid #9ee2fe;
-        border-radius: 20px;
-        box-shadow: inset 0 0 15px #77a5eb;
-    }
-    .cred
-    {
-    	color: #c7c7c7;
+    	color: black;
     	font-weight: bolder;
     	font-size: 12px;
+    	padding: 0 5px;
     }
     form label
     {
     	font-size: 13px;
+    	margin: 0;
+    	color: #b27272;
+    	background: lightgrey;
+    	width: 100%;
+    	padding: 0 5px;
+    	border-radius: 3px;
     }
     select,input
     {
@@ -122,17 +129,16 @@
         box-shadow: none !important;
         outline: 0 !important;
     }
-    .btn-submit
+    .btn-edit
     {
-        width: 100%;
-        height: 40px;
         color: #ffffff;
         margin: 0;
         padding: 0;
-        border-radius: 8px;
+        border-radius: 5px;
         border:0;
-        background: linear-gradient(180deg,rgba(43,67,129,.96),rgba(31,10,90,.96));
-
+        background: #CF2029;
+        padding: 5px;
+        min-width: 50px;
     }
     .btn-submit:hover
     {
@@ -144,89 +150,105 @@
 
 @section('content')
 
-<div class="card">
-	<div class="card-header mb-0">
-		<i class="fa fa-info" style="background: #6008c7; padding: 7px; clip-path: circle();"></i> Account Info
-	</div> 
-	<div class="card-body">
+<div class="w-100 page-title p-2">
+	Account Info
+</div>
 
-		<div class="row">
+<div class="w-100 p-2">
+	<div style="background:white;border-radius:5px">
+		<div class="py-4 px-2">
+			<div class="container-fluid">
+				<div class="row">
 
-			<div class="col-12 col-md-4">
-				<div class="card p-1" style="height: 100%">
-					<div class="card-body ditto-card-body">
+					<div class="col-12 col-sm-6 col-lg-4 col-xl-3 pb-3">
+						<div class="p-2" style="border:1px solid #707070; height: 100%; position: relative; min-height: 250px">
+							<span class="field-title">Account details</span>
 
-						<form>
-						  	<div class="form-group mb-4">
-						    	<label for=""><i class="fa fa-envelope"></i> Email Address</label>
-						    	<div class="cred" id="profile-email">{{ $email }}</div>
-						  	</div>
+							<form>
+							  	<div class="form-group mb-2">
+							    	<label for=""><i class="fa fa-envelope"></i> Email Address</label>
+							    	<div class="cred" id="profile-email">{{ $email }}</div>
+							  	</div>
 
-						  	<div class="form-group mb-4">
-						    	<label for=""><i class="fa fa-user"></i> Username</label>
-						    	<div class="cred" id="profile-usename">{{ $username }}</div>
-						  	</div>
+							  	<div class="form-group mb-2">
+							    	<label for=""><i class="fa fa-user"></i> Username</label>
+							    	<div class="cred" id="profile-usename">{{ $username }}</div>
+							  	</div>
 
-						  	<div class="form-group mb-4">
-						    	<label for=""><i class="fa fa-id-card-o"></i> Full Name</label>
-						    	<div class="cred" id="profile-fullname">{{ $first_name }} {{ $last_name }}</div>
-						  	</div>
+							  	<div class="form-group mb-2">
+							    	<label for=""><i class="fa fa-id-card-o"></i> Full Name</label>
+							    	<div class="cred" id="profile-fullname">{{ $first_name }} {{ $last_name }}</div>
+							  	</div>
 
-						  	<div class="form-group mb-4">
-						    	<label for=""><i class="fa fa-phone"></i> Contact No.</label>
-						    	<div class="cred" id="profile-usename">{{ $mobile }}</div>
-						  	</div>
-						</form>
+							  	<div class="form-group mb-2">
+							    	<label for=""><i class="fa fa-phone"></i> Contact No.</label>
+							    	<div class="cred" id="profile-usename">{{ $mobile }}</div>
+							  	</div>
+
+						  	  	<div class="form-group mb-0" style="text-align: right;">
+						  		   	<button type="submit" class="btn btn-edit">Edit</button>
+						  	  	</div>
+							</form>
+						</div>
 					</div>
+
+					<div class="col-12 col-sm-6 col-lg-4 col-xl-3 pb-3">
+						<div class="p-2" style="border:1px solid #707070; height: 100%; position: relative; min-height: 250px">
+							<span class="field-title">Banking Details</span>
+							
+							<form>
+								<div class="form-group mb-2">
+							    	<label for=""><i class="fa fa-info-circle"></i> Bank</label>
+							    	<div class="cred" id="profile-email">
+							    		@if($bank)
+							    			{{$bank}}
+							    		@else
+							    			-
+							    		@endif
+							    	</div>
+							  	</div>
+
+							  	<div class="form-group mb-2">
+							    	<label for=""><i class="fa fa-info-circle"></i> Bank Account</label>
+							    	<div class="cred" id="profile-email">
+							    		@if($bank)
+							    			{{$bank_acc}}
+							    		@else
+							    			-
+							    		@endif
+							    	</div>
+							  	</div>
+
+							  	<div class="form-group mb-2">
+							    	<label for=""><i class="fa fa-info-circle"></i> Bank Account's Holder</label>
+							    	<div class="cred" id="profile-email">
+							    		@if($bank)
+							    			{{$bank_acc_name}}
+							    		@else
+							    			-
+							    		@endif
+							    	</div>
+							  	</div>
+
+				  				<div class="form-group mb-0" style="text-align: right; width: fit-content; position: absolute; bottom: 8px; right: 5px;">
+						  		   	<button type="button" class="btn btn-edit edit-bank">Edit</button>
+						  	  	</div>
+							</form>
+						</div>
+
+					</div>
+
 				</div>
 			</div>
-
-			<div class="col-12 col-md-4">
-				<div class="card p-1" style="height: 100%">
-					<div class="card-body ditto-card-body" style="position: relative">
-
-						<form>
-						  	<div class="form-group mb-4">
-						    	<label for=""><i class="fa fa-info-circle"></i> Banking Details</label>
-						    	<div id="banking-details">
-						    		<div class="cred" id="bank-name">
-						    			@if($bank)
-						    				{{$bank}}
-						    			@else
-						    				-
-						    			@endif
-						    		</div>
-						    		<div class="cred" id="bank-acc">
-						    			{{$bank_acc}}
-						    		</div>
-						    		<div class="cred" id="bank-owner">
-						    			{{$bank_acc_name}}
-						    		</div>
-						    	</div>
-						  	</div>
-<!-- 
-						  	<div class="form-group mb-4">
-						    	<label for=""><i class="fa fa-globe"></i> Bank Country</label>
-						    	<div class="cred" id="banking-coutnry">Malaysia</div>
-						  	</div> -->
-						</form>
-
-						<i class="fa fa-edit fa-2x" style="position: absolute;bottom: 2%; right: 2%; cursor: pointer"></i>
-					</div>
-				</div>
-			</div>
-
 		</div>
-
 	</div>
-
 </div>
 
 <div class="modal fade" role="dialog" id="modal-bank">
 	<div class="modal-dialog">
-		<div class="modal-content" style="background: transparent;">
+		<div class="modal-content" style="background: white;">
 			<div class="modal-body ditto-card-body">
-				<p><i class="fa fa-info" style="background: #6008c7; padding: 7px; clip-path: circle();"></i> Bank Details</p>
+				<p style="color: #000"><i class="fa fa-info" style="background: #6008c7; padding: 7px; clip-path: circle();"></i> Bank Details</p>
 				<form id="mainForm" method="POST">
 					@csrf
 					<div class="form-group">
@@ -248,8 +270,8 @@
 					    <input type="text" class="form-control form-control-sm" placeholder="{{$bank_acc}}" value="{{$bank_acc}}" name="bank_acc">
 				  	</div>
 
-				  	<div class="form-group">
-					   	<button type="submit" class="btn btn-submit">Submit</button>
+				  	<div class="form-group" style="text-align: right">
+					   	<button type="submit" class="btn btn-edit">Submit</button>
 				  	</div>
 				</form>
 			</div>
