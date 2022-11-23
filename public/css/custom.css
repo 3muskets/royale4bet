@@ -1,0 +1,144 @@
+.label-icon
+{
+    width: 20px;
+    height: 20px;
+}
+
+.sorting 
+{ 
+    cursor:pointer;
+    position:relative;
+    padding-right: 2em !important;
+}
+
+.sorting::before 
+{ 
+    content: "\2191";
+    opacity:0.4;
+    right:0.9em;
+    bottom:0.2em;
+    position:absolute;
+}
+
+.sorting::after 
+{ 
+    content: "\2193";
+    opacity:0.4;
+    right:0.2em;
+    bottom:0.2em;
+    position:absolute;
+}
+
+.sorting-asc::before 
+{ 
+    opacity:1;
+}
+
+.sorting-desc::after 
+{ 
+    opacity:1;
+}
+
+.menu
+{
+    background: #ffffff !important;
+    border-radius: 5px !important;
+    padding: 0.25rem 0.35rem !important;
+    color: #363636 !important;
+    position: relative !important;
+    margin: 2px 0 !important;
+}
+.menu:hover
+{
+    color: #ec008c !important;
+    border-left: 5px solid #ec008c;
+}
+.menu.active
+{
+    color: #ec008c !important;
+    border-left: 5px solid #ec008c;
+}
+
+.submenu
+{
+    color: #ffffff !important;
+    background: #190c32 !important;
+    list-style-type: none !important;
+    margin: 5px 0 !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+}
+.submenu a
+{
+    padding: 0.25rem 0.35rem !important;
+}
+.submenu a:hover
+{
+    color: #00fff0 !important;
+    background: transparent !important;
+}
+.submenu a.active
+{
+    color: #00fff0 !important;
+    background: transparent !important;
+}
+.sidebar .nav-dropdown.open
+{
+    background: transparent !important;
+}
+
+.sidebar .nav-dropdown.open > .nav-link.nav-dropdown-toggle::before, .sidebar .navbar .nav-dropdown.open > .nav-dropdown-toggle.dropdown-toggle::before, .navbar .sidebar .nav-dropdown.open > .nav-dropdown-toggle.dropdown-toggle::before
+{
+    transform: rotate(180deg) !important;
+}
+.sidebar .nav-dropdown-toggle::before
+{
+    background: none;
+    font-family: FontAwesome;
+    content: "\f078";
+    color: #c92985;
+    font-size: 6px !important;
+    right: 0.5rem !important;
+}
+
+.sidebar .nav-dropdown.open .menu
+{
+    color: #ec008c !important;
+    border-left: 5px solid #ec008c !important;
+}
+.subitem-active
+{
+    color: #00fff0 !important;
+}
+
+.profile-card
+{
+    background: transparent;
+}
+
+.profile-header
+{
+    width: 200px !important;
+    background: #c92985;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 0.25rem 1.25rem !important;
+    border-top-left-radius: 5px !important;
+    border-top-right-radius: 5px !important;
+}
+
+.profile-body
+{
+    border-top: 1px solid #c92985;
+    border-bottom-left-radius: 5px !important;
+    border-bottom-right-radius: 5px !important;
+    background: #ffffff;
+    padding: 2.5rem 0;
+}
+
+.profile-body .row
+{
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}

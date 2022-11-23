@@ -1,0 +1,10 @@
+<VirtualHost 127.0.0.1:80 _default_:80>
+  ServerName www.example.com
+  ServerAlias *
+  DocumentRoot /opt/bitnami/projects/sample
+  <Directory "/opt/bitnami/projects/sample">
+    Options -Indexes +FollowSymLinks -MultiViews
+    AllowOverride All
+    Require all granted
+  </Directory>
+</VirtualHost>

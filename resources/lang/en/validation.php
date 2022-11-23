@@ -130,6 +130,8 @@ return [
         ],
     ],
 
+    'captcha' => 'Invalid captcha',
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes
