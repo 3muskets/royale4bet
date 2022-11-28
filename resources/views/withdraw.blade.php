@@ -165,96 +165,77 @@
 </script>
 
 <style type="text/css">
-    .card
-    {
-        border: none;
-        background: transparent;
-    }
-    .card-header
-    {
-        background: linear-gradient(180deg,#131228,#140133);
-    }
-    .card-header span
-    {
-        -webkit-mask: linear-gradient(-60deg,#000 30%,#0005,#000 70%) right/300% 100%;
-        animation: shimmer 2.5s infinite;
-        font-weight: bold;
-    }
-    .btn-submit
-    {
-        width: 100%;
-        height: 40px;
-        color: #ffffff;
-        margin: 0;
-        padding: 0;
-        border-radius: 8px;
-        border:0;
-        background: linear-gradient(180deg,rgba(43,67,129,.96),rgba(31,10,90,.96));
-
-    }
-    .btn-submit:hover
-    {
-        color: #ffffff;
-        background: linear-gradient(180deg,#79c1f4,#4300d2);
-    }
-    .withdrawbox-v2
-    {
-        background: #23214a;
-        border: 2px solid #9ee2fe;
-        border-radius: 20px;
-        box-shadow: inset 0 0 15px #77a5eb;
-    }
-    
     select,input
     {
-        width: 100%;
-        background: black !important;
-        border-radius: 10px !important;
         box-shadow: none !important;
         outline: none !important;
-        color: white !important;
-        padding: 5px 10px !important;
-
     }
 
     select,input::placeholder
     {
+        color: #000 !important;
+    }
+
+    input::placeholder
+    {
         color: #bcbcbc !important;
-        text-align: center;
+    }
+
+    label
+    {
+        color: #000;
     }
     button:focus
     {
         box-shadow: none !important;
         outline: 0 !important;
     }
-    .btn-wrap
+
+    .page-title
     {
-        display: flex;
+        background:#27273F;
+        font-size:16px;
+        font-weight: bold;
     }
-    .btn-wrap button
+    
+    .bank-option
     {
-        width: 33%;
-        margin: 1%;
         display: flex;
-        justify-content: center;
         align-items: center;
-        padding: 12px 10px;
-        background: #3e3a8e;
+    }
+
+    .bank-option.selected
+    {
+        border: 1px solid black;
+    }
+
+    .btn-submit
+    {
+        color: #ffffff;
+        margin: 0;
+        padding: 0;
         border-radius: 5px;
-        border: 1px solid transparent;
-        line-height: normal;
-        height: auto;
-        opacity: 1;
-        color: #fff;
+        border:0;
+        background: #CF2029;
+        padding: 5px;
+        width: 100%;
     }
-    .btn-wrap button:focus
+    #notice
     {
-        box-shadow: none !important;
-        outline: 0 !important;
+        list-style-type: none;
     }
-    .btn-wrap button:hover
+    #notice li
     {
-        filter: brightness(1.2);
+        color: darkgrey;
+    }
+    ul li::before 
+    {
+        content: "\2022";
+        color: #dd214c;
+        font-weight: bold;
+        display: inline-block; 
+        width: 1em;
+        margin-left: -1em;
     }
 </style>
 
@@ -262,7 +243,107 @@
 
 @section('content')
 
-<div class="card" style="background: transparent;">
+<div class="w-100 page-title p-2">
+    Withdrawal
+</div>
+
+<div class="w-100 p-2">
+    <div style="background:white;border-radius:5px">
+        <div class="py-4 px-2">
+            <div class="container-fluid">
+
+                <form style="" method="POST" id="mainForm">
+
+                    <input type="hidden" value="w" name="type">
+                    <input type="hidden" value="b" name="payment_type">
+
+                    <div class="form-group row" style="align-items: center">
+                        <label class="col-sm-2 col-form-label">Deposit Channel:</label>
+                        <div class="col-sm-10">
+                            <div style="display: flex">
+                                <div class="mr-2 bank-option selected" style="cursor: pointer; padding: 5px;">
+                                    <img src="/images/payment/maybank.png" style="width: 70px;">
+                                </div>
+
+                                <div class="mr-2 bank-option" style="cursor: pointer;">
+                                    <img src="/images/payment/cimb.png" style="width: 70px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row" style="align-items: center">
+                        <label class="col-sm-2 col-form-label">Bank Details:</label>
+
+                        <div class="col-sm-3" style="position: relative;">
+                            <input class="" type="text" value="{{$bankInfo[0]->bank}}" name="bank" disabled style="width: 100%">
+   
+                        </div>
+
+                    </div>
+
+                    <div class="form-group row" style="align-items: center">
+                        <label class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-3" style="position: relative;">
+                            <input class="" type="text" value="{{$bankInfo[0]->name}}" name="acc_name" disabled style="width: 100%">
+    
+                        </div>
+                    </div>
+
+                    <div class="form-group row" style="align-items: center">
+                        <label class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-3" style="position: relative;">
+                            <input class="" type="text" value="{{$bankInfo[0]->acc_no}}" name="acc_no" disabled  style="width: 100%">
+          
+                        </div>
+                    </div>
+
+                    <div class="form-group row" style="align-items: center">
+                        <label class="col-sm-2 col-form-label">Amount:</label>
+                        <div class="col-sm-3">
+                            <input name="amount" type="number" placeholder="Max. withdrawal: 50,000" style="width: 100%">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-3">
+                            <button class="btn btn-submit" type="submit" style="font-size:14px;">
+                                Withdraw
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <div style="background:white;border-radius:5px; margin-top: 10px;">
+        <div class="py-4 px-2">
+            <div class="container-fluid">
+
+                <ul id="notice">
+                    <i class='fa fa-exclamation-triangle' style="color: #dd214c; font-size: 14px; padding: 10px 0;"> Important Notice</i>
+                    <li>
+                        Kindly check with our 24/7 LIVECHAT if your transaction is pending for more than 10 minutes.
+                    </li>
+                    <li>
+                        Withdrawal bank account name must match with registered full name, member is not allow withdrawal to 3rd party bank account.
+                    </li>
+                    <li>
+                        Please make sure your turnover requirement has been achieved before making a withdrawal transaction to avoid inconvenience.
+                    </li>
+                    <li>
+                        If there is any discrepancy or you may have any other further withdrawal inquiries, kindly contact our 24/7 LIVECHAT. Thank you.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="card" style="background: transparent;">
 
     <div class="card-header mb-0">
         <i class="fa fa-money" style="padding: 7px;"></i> <span>Withdrawal</span>
@@ -338,176 +419,6 @@
             </div>
         </div>
     </div>
-</div>
-<!-- <div class="container py-2">
-    <div class="row justify-content-center">
-        <div class="col-12 col-sm-10 col-md-9 col-lg-10" >
-
-            <h1 style="color:#ffffff;text-align: center;">Withdraw</h1>
-            <div class="card" style="background: transparent;">
-                <div class="card-body withdrawbox" style="">
-                    
-                        <div class="card-body" style="padding-bottom:0px;">
-                            <div class="row justify-content-center">
-
-                                <div class="col-md-12 col-lg-8">
-
-                                        <div class="form-group" style="padding-top: 5px;text-align: center;">
-                                            <label style="color:#ffffff;font-size:16px;font-size:25px;">Withdraw Option </label>
-                                        </div>
-
-                                </div>
-                            </div>   
-                            <div class="row justify-content-center">
-
-
-
-                                <div class="col-md-12 col-lg-4">
-
-                                    <div class="form-group">
-                                        <div id="deposit-bank" class="tab-inner-button-item tab-selected" style="padding:5px;" onclick="showTab(1);">
-                                            <span style="color:#ffffff;font-size:16px;" >Bank</span>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="col-md-12 col-lg-4">
-
-                                    <div class="form-group">
-                                        <div id="deposit-crypto" class="tab-inner-button-item" style="padding:5px;" onclick="showTab(2);">
-                                            <span style="color:#ffffff;font-size:16px;">Crypto Payment</span>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <hr style="background: rgba(155,225,255,.96);">
-
-                        <div class="card-body" id="bank-form">    
-
-                            <form method="POST" id="mainForm">
-                                <input type="hidden" value="w" name="type">
-                                <input type="hidden" value="b" name="payment_type">
-                                <input type="hidden" value="{{$bankInfo[0]->bank}}" name="bank">
-                                <input type="hidden" value="{{$bankInfo[0]->acc_no}}" name="acc_no">
-                                <input type="hidden" value="{{$bankInfo[0]->name}}" name="acc_name">
-                                <div class="row justify-content-center">
-
-                                        <div class="col-md-12 col-lg-4">
-
-                                            <div class="form-group" style="padding-top: 5px;text-align:center;">
-                                                <label style="color:#ffffff;font-size:16px;">Amount </label>
-                                                <label style="color:red;">* </label>
-                                                <input id="amount" name="amount" type="text" >
-                                            </div>
-
-                                        </div>
-                                </div>
-
-                                <div class="row justify-content-center">
-
-                                        <div class="col-md-12 col-lg-4 ">
-
-                                            <div class="form-group" style="padding-top: 5px;text-align:center;">
-                                                <label style="color:#ffffff;font-size:16px;">Currency</label>
-                                                <label style="color:red;">* </label>
-                                                 <input id="currency" class="ember-text-field" type="text" value="{{ $currency }}" disabled>
-                                            </div>
-
-                                        </div>
-      
-                                </div>     
- 
-                                <div class="row justify-content-center">
-
-                                        <div class="col-12 col-md-6 col-lg-2 ">
-
-                                            <div class="form-group">
-                                                <button class="btn btn-submit link-fill" type="submit" style="font-size:16px;">
-                                                Withdraw
-                                                </button>
-
-                                            </div>
-
-                                        </div>
-                                </div>
-                            </form>                        
-                        </div>
-
-
-                        <div class="card-body" id="crypto-form" style="display:none;">    
-
-                            <form method="POST" id="mainForm-crypto">
-                            <input type="hidden" value="w" name="type">
-                            <input type="hidden" value="c" name="payment_type">
-                            <div class="row justify-content-center">
-
-                                    <div class="col-md-12 col-lg-4">
-
-                                        <div class="form-group" style="padding-top: 5px;text-align:center;">
-                                            <label style="color:#ffffff;font-size:16px;">{{__('app.dw.new.crypto_currency') }} </label>
-                                            <label style="color:red;">* </label>
-                                            <select name="crypto_currency">
-                                                <option value="usdt">USDT</option>
-                                            </select>
-                                        </div>
-
-                                    </div>
-                            </div>
-
-                            <div class="row justify-content-center">
-
-                                    <div class="col-md-12 col-lg-4 ">
-
-                                        <div class="form-group" style="padding-top: 5px;text-align:center;">
-                                            <label style="color:#ffffff;font-size:16px;">{{__('app.dw.new.amount') }} </label>
-                                            <label style="color:red;">* </label>
-                                            <input id="amount" name="amount" type="text" >
-                                            <div id="rate">= 0.00 USDT</div>
-                                        </div>
-
-                                    </div>
-  
-                            </div>     
-                            <div class="row justify-content-center">
-
-                                    <div class="col-md-12 col-lg-4 ">
-
-                                        <div class="form-group" style="padding-top: 5px;text-align:center;">
-                                            <label style="font-size:16px;">{{__('app.dw.new.wallet_add') }}</label>
-                                            <label style="color:red;">* </label>
-                                            <input name="address" type="text">
-                                            <div>{{__('app.dw.new.wallet_add.digits') }}</div>
-                                        </div>
-
-                                    </div>
-                            </div>  
-                            <div class="row justify-content-center">
-
-                                    <div class="col-12 col-md-6 col-lg-2">
-
-                                        <div class="form-group">
-                                            <button class="btn btn-submit link-fill" type="submit" style="font-size:16px;">
-                                            Withdraw
-                                            </button>
-                                        </div>
-
-                                    </div>
-                            </div> 
-                            </form>                       
-                        </div>
-
-
-                    
-                </div>
-            </div>
-        </div>
-    </div>   
-
 </div> -->
 @endsection
 

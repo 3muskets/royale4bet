@@ -1335,17 +1335,6 @@
                             </button>
                         </a>
                     </div>           
-                    
-                    <div class="col-6 col-md-3 p-1">
-                        <a href="{{ route('bet_history') }}">
-                            <button type="button" class="btn btn-primary w-100">
-                                <div class="d-flex justify-content-center">
-                                    <span class="fa fa-list" style="font-size:30px">
-                                </div>
-                                <div class="d-flex justify-content-center">History</div>
-                            </button>
-                        </a>
-                    </div>
 
                     <div class="col-6 col-md-3 p-1">
                         <a href="/my_profile/deposit/new?bank">
@@ -1369,10 +1358,6 @@
                         </a>
                     </div>
 
-                    
-                </div>
-                <div class="row">
-
                     <div class="col-6 col-md-3 p-1">
                         <a href="/transfer">
                             <button type="button" class="btn btn-primary w-100">
@@ -1383,8 +1368,22 @@
                             </button>
                         </a>
                     </div>
+                    
+                </div>
+                <div class="row">
 
                     <div class="col-6 col-md-3 p-1">
+                        <a href="/history">
+                            <button type="button" class="btn btn-primary w-100">
+                                <div class="d-flex justify-content-center">
+                                    <span class="fa fa-list" style="font-size:30px">
+                                </div>
+                                <div class="d-flex justify-content-center">History</div>
+                            </button>
+                        </a>
+                    </div>
+
+                    <!-- <div class="col-6 col-md-3 p-1">
                         <a href="/my_profile/deposit/new?status">
                             <button type="button" class="btn btn-primary w-100">
                                 <div class="d-flex justify-content-center">
@@ -1415,7 +1414,7 @@
                                 <div class="d-flex justify-content-center" style="font-size:10px;">Referral</div>
                             </button>
                         </a>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 

@@ -263,79 +263,15 @@
 </script>
 
 <style type="text/css">
-        
-    .tab-inner-button-item
-    {
-        display: flex;
-	    flex-shrink: 0;
-	    text-align: center;
-	    border: 1px solid white;
-	    border-radius: 5px;
-	    cursor: pointer;
-	    border-color: #aaddf4;
-	    color :white;
-        width: 30%;
-        margin-left: auto;
-        margin-right: auto;
-        transition: 0.5s;
-    }
-    .tab-inner-button-item span
-    {
-        width: 100%;
-        align-self: center;
-    }
-    .tab-selected
-    {
-        background:linear-gradient(90deg,#eb77cf .97%,#8271f2);
-    }
-    .btn-submit
-    {
-        width: 100%;
-        height: 40px;
-        color: #ffffff;
-        margin: 0;
-        padding: 0;
-        border-radius: 8px;
-        border:0;
-        background: linear-gradient(180deg,rgba(43,67,129,.96),rgba(31,10,90,.96));
-
-    }
-    .btn-submit:hover
-    {
-        color: #ffffff;
-        background: linear-gradient(180deg,#79c1f4,#4300d2);
-    }
-
-    .depositbox
-    {
-        background-color: #140133;
-        border-radius:10px;
-        border: 4px solid rgba(155,225,255,.96);
-        box-shadow: inset 0 20px 20px -20px #77a5eb;
-    }
-    .depositbox-v2
-    {
-        background: #23214a;
-        border: 2px solid #9ee2fe;
-        border-radius: 20px;
-        box-shadow: inset 0 0 15px #77a5eb;
-    }
     select,input
     {
-        width: 100%;
-/*        border: 2px solid #77a5eb !important;*/
-        background: black !important;
-        border-radius: 10px !important;
         box-shadow: none !important;
         outline: none !important;
-        color: white !important;
-        padding: 5px 10px !important;
-
     }
 
     select,input::placeholder
     {
-        color: #bcbcbc !important;
+        color: #000 !important;
         text-align: center;
     }
 
@@ -345,107 +281,61 @@
         text-align: center;
     }
 
-    #mainForm input
+    label
     {
-        text-align: center;
-    }
-
-    #qrstring
-    {
-        color:#ffffff;
-        font-size:14px; 
-        margin: 10px auto;
-        width: 138px;
-    }
-
-    #qrcode
-    {
-        background-color: white;
-        padding: 18px; 
-        width: 138px; 
-        height: 138px;
-        margin:10px auto;
-    }
-
-    .card
-    {
-        border: none;
-        background: transparent;
-    }
-    .card-header
-    {
-        background: linear-gradient(180deg,#131228,#140133);
-    }
-    .card-header span
-    {
-        -webkit-mask: linear-gradient(-60deg,#000 30%,#0005,#000 70%) right/300% 100%;
-        animation: shimmer 2.5s infinite;
-        font-weight: bold;
-    }
-    .button-tabs
-    {
-        background: linear-gradient(180deg,rgba(43,67,129,.96),rgba(31,10,90,.96));
-        color: white;
-        font-size: 12px;
-        border-radius: 8px;
-        padding: 10px 15px;
-        margin: 0 15px;
-        min-width: 120px;
-        text-align: center;
-    }
-    #deposit-option
-    {
-        display: flex;
-        width: 100%;
-        transition: 0.5s;
-        margin: 15px 0;
-        padding: 0 15px;
-    }
-    .btn-wrap
-    {
-        display: flex;
-    }
-    .btn-wrap button
-    {
-        width: 33%;
-        margin: 1%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 12px 10px;
-        background: #3e3a8e;
-        border-radius: 5px;
-        border: 1px solid transparent;
-        line-height: normal;
-        height: auto;
-        opacity: 1;
-        color: #fff;
-    }
-    .btn-wrap button:focus
-    {
-        box-shadow: none !important;
-        outline: 0 !important;
-    }
-    .btn-wrap button:hover
-    {
-        filter: brightness(1.2);
+        color: #000;
     }
     button:focus
     {
         box-shadow: none !important;
         outline: 0 !important;
     }
-    @media(max-width: 767.98px)
-    {
-        #deposit-option
-        {
-            padding: 0;
-        }
 
-        #mainForm input
-        {
-            width: 100%;
-        }
+    .page-title
+    {
+        background:#27273F;
+        font-size:16px;
+        font-weight: bold;
+    }
+    
+    .bank-option
+    {
+        display: flex;
+        align-items: center;
+    }
+
+    .bank-option.selected
+    {
+        border: 1px solid black;
+    }
+
+    .btn-submit
+    {
+        color: #ffffff;
+        margin: 0;
+        padding: 0;
+        border-radius: 5px;
+        border:0;
+        background: #CF2029;
+        padding: 5px;
+        width: 100%;
+    }
+    #notice
+    {
+        list-style-type: none;
+    }
+    #notice li
+    {
+        color: darkgrey;
+    }
+    ul li::before 
+    {
+        content: "\2022";
+        color: #dd214c;
+        font-weight: bold;
+        display: inline-block; 
+        width: 1em;
+        margin-left: -1em;
     }
 </style>
 
@@ -453,257 +343,137 @@
 
 @section('content')
 
-<div class="card" style="background: transparent;">
-
-    <div class="card-header mb-0">
-        <i class="fa fa-money" style="padding: 7px;"></i> <span>DEPOSIT</span>
-    </div>
-
-    <div class="card-body">
-
-        <!--- list --->
-<!--         <div class="d-flex">
-
-            <div class="button-tabs">
-                <i class="fa fa-money"></i> Withdraw
-            </div>
-            <div class="button-tabs">
-                <i class="fa fa-history"></i> Deposit List
-            </div>
-            <div class="button-tabs">
-                <i class="fa fa-history"></i> Withdraw List
-            </div>
-
-        </div>
-
-        <div class="w-100 my-4" style="height: 2px; background: linear-gradient(90deg, rgba(25,54,177,0) 0%, rgba(43,67,129,.96) 50%, rgba(25,54,177,0) 100%)">
-        </div> -->
-
-        <!---- deposit method --->
-        <div class="row mt-4"> 
-            <div class="col-12 col-md-4">
-                <div class="card">
-
-                    <div class="card-body" style="position: relative;">
-
-                        <div class="form-group">
-                            <label>Deposit Method:</label>
-                            <select class="" id="deposit-method">
-                                <option value="f2f">FIAT2FIAT</option>
-                                <option value="crypto">Crypto</option>
-                                @if (sizeof($bankInfo) > 0)
-                                    <option value="bank">Bank Transfer</option>
-                                @endif
-                                <option value="doitnow">Doit Now</option>
-                            </select>
-                        </div>
-
-                        <div class="tabs py-4" id="f2f-form" style="display: block;">
-                            <div class="card">
-                                <div class="card-body p-4 depositbox-v2">
-                                    <form method="POST" id="mainForm">
-                                        <input type="hidden" value="d" name="type">
-                                        <input type="hidden" value="f" name="payment_type">
-
-                                        <div class="form-group">
-                                            <input class="amount" name="amount" type="number" placeholder="Min. deposit: 50">
-                                            <div class="btn-wrap mt-2">
-                                                <button class="btn btn-amount" data-value="50" type="button">50</button>
-                                                <button class="btn btn-amount" data-value="100" type="button">100</button>
-                                                <button class="btn btn-amount" data-value="200" type="button">200</button>
-                                            </div>
-                                            <div class="btn-wrap">
-                                                <button class="btn btn-amount" data-value="300" type="button">300</button>
-                                                <button class="btn btn-amount" data-value="500" type="button">500</button>
-                                                <button class="btn btn-amount" data-value="1000" type="button">1000</button>
-                                            </div>
-                                        </div>
-
-                                        
-                                        <div class="form-group" style="padding-top:5px;">
-                                            <div class="ml-2">
-                                              <p>Promotion Option:</p>
-                                              @foreach($promoList as $p)
-                                              <input type="radio" name="promo_id" value="{{$promoList[0]->promo_id}}" style="width:13px;">
-                                              <label>{{ $p->promo_name }}</label>
-                                              @endforeach
-                                              <input type="radio" id="nopromo" name="promo_id" value="" style="width:13px;" checked>
-                                              <label for="nopromo">No, thanks.</label>
-                                            </div>
-                                        </div>
-
-                                        
-
-                                        <div class="form-group">
-                                            <button class="btn btn-submit link-fill" type="submit" style="font-size:16px;">
-                                            Deposit
-                                            </button>
-
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>                   
-                        </div>
-
-                        <div class="tabs py-4" id="crypto-form" style="display: none;">
-                            <div class="card">
-                                <div class="card-body p-4 depositbox-v2">
-                                    <div id="bfr-request">
-                                        <div style="color:#ffffff;font-size:14px;">Please Press Request Button to request the wallet address</div>
-                                        <br>
-                                        <div class="form-btn">
-                                            <button class="btn-submit" type="submit" id="wallet-btn" onclick="getWalletAddress();">Request</button>
-                                        </div>
-                                    </div>
-
-                                    <input type="hidden" id="copy_text" value="">
-                                    <div id="aft-request" class="" style="text-align: center;">
-                                        <div class="form-group">
-                                            <div style="color:#ffffff;font-size:14px;">Chain Type :USDT TRC20</div>
-                                            <div style="color:#ffffff;font-size:14px;">
-                                                Scan To Pay
-                                            </div>
-                                            <div id="qrcode" class="qr">
-                                            </div>
-                                            <div id="qrstring"></div>
-                                            <a href="javascript:void(0)" style="font-size:16px;" onclick="copyQr()">{{ __('app.dw.new.copyaddress') }}</a>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="tabs py-4" id="bank-form" style="display: none;">
-                            <div class="card">
-                                <div class="card-body p-4 depositbox-v2">
-                                    <form method="POST" id="mainForm2">
-                                        <input type="hidden" value="d" name="type">
-                                        <input type="hidden" value="b" name="payment_type">
-                                        <input type="hidden" value="{{$bankInfo[0]->id}}" name="admin_bank_id">
-
-                                        <div class="form-group">
-                                            <div class="d-flex" style="align-items: center;">
-                                                
-                                                <div class="ml-2">
-                                                    <div id="bank"style="color:#ffffff;">Deposit Bank: {{$bankInfo[0]->bank}}</div>
-                                                    <input type="hidden" value="{{$bankInfo[0]->bank}}" name="bank">
-
-                                                    <div id="acc_no" style="color:#ffffff;">Deposit Account Number: {{$bankInfo[0]->acc_no}}</div>
-                                                    <input type="hidden" value="{{$bankInfo[0]->acc_no}}" name="acc_no">
-
-                                                    <div id="acc_name" style="color:#ffffff;">Deposit Account Name: {{$bankInfo[0]->name}}</div>
-                                                    <input type="hidden" value="{{$bankInfo[0]->name}}" name="acc_name">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group" style="padding-top: 5px;text-align:center;">
-                                            <input class="amount" name="amount" type="number" placeholder="Min. deposit: 50">
-                                            <div class="btn-wrap mt-2">
-                                                <button class="btn btn-amount" data-value="50" type="button">50</button>
-                                                <button class="btn btn-amount" data-value="100" type="button">100</button>
-                                                <button class="btn btn-amount" data-value="200" type="button">200</button>
-                                            </div>
-                                            <div class="btn-wrap">
-                                                <button class="btn btn-amount" data-value="300" type="button">300</button>
-                                                <button class="btn btn-amount" data-value="500" type="button">500</button>
-                                                <button class="btn btn-amount" data-value="1000" type="button">1000</button>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group" style="padding-top:5px;">
-                                            <div class="ml-2">
-                                              <p>Promotion Option:</p>
-                                              @foreach($promoList as $p)
-                                              <input type="radio" name="promo_id" value="{{$promoList[0]->promo_id}}" style="width:13px;">
-                                              <label>{{ $p->promo_name }}</label>
-                                              @endforeach
-                                              <input type="radio" id="nopromo" name="promo_id" value="" style="width:13px;" checked>
-                                              <label for="nopromo">No, thanks.</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group" style="padding-top: 5px;text-align:center;">
-                                            <input id="currency" class="ember-text-field text-center" type="text" value="Currency: MYR" disabled>
-                                        </div>
-                                        <div>
-                                              <label for="img">Select image:</label>
-                                              <input type="file" id="img" name="img" accept="image/*">
-                                        </div>
-                                        <div class="form-group">
-                                            <button class="btn btn-submit link-fill" type="submit" style="font-size:16px;">
-                                            Deposit
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="tabs py-4" id="doitnow-form" style="display: none;">
-                            <div class="card">
-                                <div class="card-body p-4 depositbox-v2">
-                                    <form method="POST" id="mainForm3">
-                                        <input type="hidden" value="d" name="type">
-                                        <input type="hidden" value="d" name="payment_type">
-
-                                        <div class="form-group">
-                                            <input class="amount" name="amount" type="number" placeholder="Min. deposit: 50">
-                                            <div class="btn-wrap mt-2">
-                                                <button class="btn btn-amount" data-value="50" type="button">50</button>
-                                                <button class="btn btn-amount" data-value="100" type="button">100</button>
-                                                <button class="btn btn-amount" data-value="200" type="button">200</button>
-                                            </div>
-                                            <div class="btn-wrap">
-                                                <button class="btn btn-amount" data-value="300" type="button">300</button>
-                                                <button class="btn btn-amount" data-value="500" type="button">500</button>
-                                                <button class="btn btn-amount" data-value="1000" type="button">1000</button>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group" style="padding-top:5px;">
-                                            <div class="ml-2">
-                                              <p>Promotion Option:</p>
-                                              @foreach($promoList as $p)
-                                              <input type="radio" name="promo_id" value="{{$promoList[0]->promo_id}}" style="width:13px;">
-                                              <label>{{ $p->promo_name }}</label>
-                                              @endforeach
-                                              <input type="radio" id="nopromo" name="promo_id" value="" style="width:13px;" checked>
-                                              <label for="nopromo">No, thanks.</label>
-                                            </div>
-                                        </div>
-
-
-                                        <div class="form-group">
-                                            <button class="btn btn-submit link-fill" type="submit" style="font-size:16px;">
-                                            Deposit
-                                            </button>
-
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>                   
-                        </div>
-
-                        <form method="POST" name="doitnowPayment" id="payment-form">
-                            @csrf
-                            <div class="form-container" id="doitnow-container">
-                            </div>
-                            <div class="form-btn">
-                                <button class="btn btn1"  style="display: none" type="submit">{{__('app.dw.new.button.request') }}</button>
-                            </div>
-                        </form>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
+<div class="w-100 page-title p-2">
+    Deposit
 </div>
 
+<div class="w-100 p-2">
+    <div style="background:white;border-radius:5px">
+        <div class="py-4 px-2">
+            <div class="container-fluid">
+                <form>
+                    <div class="form-group row" style="align-items: center">
+                        <label class="col-sm-2 col-form-label">Deposit Method:</label>
+                        <div class="col-sm-10">
+                            <select class="" id="deposit-method">
+                                
+                                @if (sizeof($bankInfo) > 0)
+                                <option value="bank">Bank Transfer</option>
+                                @endif
+                                <option value="ob">Quick Pay</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
 
+                <div id="bank-form" style="">
+                    <form style="" method="POST" id="mainForm">
+
+                        <input type="hidden" value="d" name="type">
+                        <input type="hidden" value="b" name="payment_type">
+                        <input type="hidden" value="{{$bankInfo[0]->id}}" name="admin_bank_id">
+
+                        <div class="form-group row" style="align-items: center">
+                            <label class="col-sm-2 col-form-label">Deposit Channel:</label>
+                            <div class="col-sm-10">
+                                <div style="display: flex">
+                                    <div class="mr-2 bank-option selected" style="cursor: pointer; padding: 5px;">
+                                        <img src="/images/payment/maybank.png" style="width: 70px;">
+                                    </div>
+
+                                    <div class="mr-2 bank-option" style="cursor: pointer;">
+                                        <img src="/images/payment/cimb.png" style="width: 70px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" style="align-items: center">
+                            <label class="col-sm-2 col-form-label">Bank Details:</label>
+                            <div class="col-sm-3" style="position: relative;">
+                                <input class="" type="text" value="{{$bankInfo[0]->name}}" name="acc_name" disabled style="width: 100%">
+                                <i class="fa fa-copy" id="fa-copy-bank" style="color: #000; position: absolute; top: 50%; right: 10%; transform: translateY(-50%); cursor: pointer"></i>
+                            </div>
+
+                            <div class="col-sm-3" style="position: relative;">
+                                <input class="" type="text" value="{{$bankInfo[0]->acc_no}}" name="acc_no" disabled  style="width: 100%">
+                                <i class="fa fa-copy" id="fa-copy-bankacc" style="color: #000; position: absolute; top: 50%; right: 10%; transform: translateY(-50%); cursor: pointer"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" style="align-items: center">
+                            <label class="col-sm-2 col-form-label">Amount:</label>
+                            <div class="col-sm-10">
+                                <input name="amount" type="number" placeholder="Min. deposit: 50">
+                            </div>
+                        </div>
+
+                        <div class="form-group row" style="align-items: center">
+                            <label class="col-sm-2 col-form-label">Promotion:</label>
+                            <div class="col-sm-10">
+                                <select class="" id="promotion">
+                                    <option value="" style="width:13px;">No, thanks</option>
+                                    @foreach($promoList as $p)
+                                    <option value="{{$p->promo_id}}" style="width:13px;">{{ $p->promo_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" style="align-items: center">
+                            <label class="col-sm-2 col-form-label">Upload Receipt:</label>
+                            <div class="col-sm-10">
+                                <input type="file" id="img" name="img" accept="image/*">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-3">
+                                <button class="btn btn-submit" type="submit" style="font-size:14px;">
+                                    Deposit
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="online-banking">
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div style="background:white;border-radius:5px; margin-top: 10px;">
+        <div class="py-4 px-2">
+            <div class="container-fluid">
+
+                <ul id="notice">
+                    <i class='fa fa-exclamation-triangle' style="color: #dd214c; font-size: 14px; padding: 10px 0;"> Important Notice</i>
+                    <li>
+                        Always check for the latest active deposit bank details before making a deposit.
+                    </li>
+                    <li>
+                        For using deposit option "Bank Transfer", Please make the transfer before submit the transaction to avoid the transaction is delay.
+                    </li>
+                    <li>
+                        Please DO NOT fill "ROYALE" # or any sensitive words related to gambling as reference/remark in your online transfer transaction.
+                    </li>
+                    <li>
+                        Please take note that 1x turnover is required for all deposits made before any withdrawal can be processed.
+                    </li>
+                    <li>
+                        Depositor’s ACCOUNT NAME must match with registered full name. We do not encourage transaction made using 3rd party/company account.
+                    </li>
+                    <li>
+                        Kindly check with our 24/7 LIVECHAT if your deposit amount has been deducted from bank account but not receive the credit or the transaction is showing pending/reject.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
 
 @endsection
 

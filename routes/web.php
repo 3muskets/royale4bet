@@ -38,7 +38,7 @@ Route::post('/ajax/slots/open_game', 'ViewControllers\GameViewController@openSlo
 
 Route::get('/lobby', 'ViewControllers\LobbyViewController@index')->name('lobby');
 
-Route::get('/bet_history', 'ViewControllers\BetHistoryViewController@index')->name('bet_history');
+Route::get('/history', 'ViewControllers\BetHistoryViewController@index');
 
 // Route::get('/bet_history/details', 'ViewControllers\BetHistoryViewController@details')->name('bet_details');
 
