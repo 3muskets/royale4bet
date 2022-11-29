@@ -57,6 +57,7 @@ return [
     'register.captcha' => 'Captcha',
     'register.name' => 'Real Name',
     'register.mobile' => 'Mobile No.',
+    'register.code' => 'OTP',
     'register.email' => 'Email Address',
     'register.tnc' => 'Terms & Conditions ',
     'register.privacypolicy' => ' Privacy Policy',

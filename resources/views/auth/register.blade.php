@@ -18,6 +18,53 @@
         });
     });
 
+    function getOTP()
+    {
+        var btn = document.getElementById("otpbtn");
+        btn.onclick = "";
+
+        if($("#mobile").val() == "")
+        {
+            alert('Please enter your mobile number');
+            btn.onclick = getOTP;
+        }
+        else
+        {
+            $('.fa-spinner').show();
+
+            var mobile = $("#mobile").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/ajax/register/sms",
+                data: {mobile:mobile},
+                success: function(data)
+                {
+                    alert('An sms has been sent to your mobile number. Please enter the OTP');
+                    $('.fa-spinner').hide();
+
+                    var second = 60;
+                    var timer = setInterval(function()
+                    {
+                        if(second > 0)
+                        {
+                            second--;
+                            $('#otpbtn').text('GET OTP (Resend in '+second+'s)');
+                            btn.onclick = "";
+                        }
+                        else
+                        {
+                            clearInterval(timer);
+                            $('#otpbtn').text('GET OTP');
+                            btn.onclick = getOTP;
+                        }
+                    }, 1000);
+                    
+                }
+            });
+        }
+    }
+
 </script>
 
 <style>
@@ -247,11 +294,25 @@
                             <div class="form-group -x-input-icon">
                                 <img data-src="/images/auth/icon-mobile.png" class="-icon" alt="mobile" src="/images/auth/icon-mobile.png" width="18">
             
-                                <input id="mobile" type="mobile" class="form-control{{ $errors->has('mobile') ? ' is-invalid' : '' }}" name="mobile" required placeholder="{{ __('app.register.mobile') }}">
+                                <input id="mobile" type="mobile" class="form-control{{ $errors->has('mobile') ? ' is-invalid' : '' }}" name="mobile" required placeholder="{{ __('app.register.mobile') }} (eg: 0199999999)">
                                 
                                 @if ($errors->has('mobile'))
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('mobile') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+
+                            <div class="form-group -x-input-icon">
+                                <img data-src="/images/auth/icon-mobile.png" class="-icon" alt="mobile" src="/images/auth/icon-mobile.png" width="18">
+            
+                                <input id="code" type="mobile" class="form-control{{ $errors->has('code') ? ' is-invalid' : '' }}" name="code" required placeholder="{{ __('app.register.code') }}">
+
+                                <div style="width: 100%; text-align: right; margin-top: 15px; "><span id="otpbtn" onclick="getOTP();" style="padding: 10px; background: grey; border-radius: 3px; cursor: pointer;">GET OTP <i class="fa fa-spinner fa-spin" style='display: none'></i></span></div>
+                                
+                                @if ($errors->has('code'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('code') }}</strong>
                                     </span>
                                 @endif
                             </div>

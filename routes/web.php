@@ -128,6 +128,16 @@ Route::post('/ajax/message/new', 'ViewControllers\MemberMessageViewController@cr
 Route::post('/ajax/message/inbox/read', 'ViewControllers\MemberMessageViewController@updateUnreadMsg');
 Route::get('/ajax/message/inbox', 'ViewControllers\MemberMessageViewController@inboxMsg');
 Route::get('/ajax/message/sent', 'ViewControllers\MemberMessageViewController@sentMsg');
+
+/*
+|--------------------------------------------------------------------------
+| SMS verification
+|--------------------------------------------------------------------------
+ */
+
+Route::post('/ajax/register/sms','SmsController@store');
+Route::post('/ajax/register/sms/verify','SmsController@verifyContact');
+
 /*
 |--------------------------------------------------------------------------
 | Locale Routes

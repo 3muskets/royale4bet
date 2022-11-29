@@ -16,6 +16,7 @@ return [
     'register.usernamelength' => 'Username must between 5-10 characters',
     'register.passwordlength' => 'Password must between 8-15 characters',
     'register.name.empty' => 'Real name cannot be empty',
+    'register.invalid_otp' => 'Invalid OTP',
 
     //login
     'login.multiple_login' => 'You have signed in other device',

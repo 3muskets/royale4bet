@@ -1242,7 +1242,7 @@
                 <td style="width:50%;">
                     <div class="d-flex justify-content-around align-items-center" style="">
                         <div>
-                            <a href="/" class="footerfixed-link" style="">
+                            <a href="#" onclick="window.Tawk_API.popup();" class="footerfixed-link" style="">
                                 <div class="d-flex align-items-center flex-column" style="">
                                     <img src="/images/app/footer/wechat.png" style="height:40px;">
                                     <span><center>CONTACT US</center></span>
@@ -1460,5 +1460,30 @@
         </div>
     </div>
 
+
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function()
+        {
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/6384c906daff0e1306d9d7a1/1givb2h1t';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
+
+
+        })();
+
+        if (window.matchMedia("(max-width: 576.98px)").matches)
+        {
+            window.Tawk_API.onLoad = function(){
+                window.Tawk_API.hideWidget();
+            };
+        }
+        
+    </script>
+    <!--End of Tawk.to Script-->
 </body>
 </html>

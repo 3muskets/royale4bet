@@ -61,7 +61,7 @@ class RegisterController extends Controller
             'password' => 'required|confirmed',
            /* 'reg_cd' => 'required',*/
             // 'captcha' => 'required|captcha',
-            // 'name' => 'required',
+            'code' => 'required',
             'mobile' => 'required',
             'email' => 'required|string|email|max:255',
         ]);
@@ -80,6 +80,7 @@ class RegisterController extends Controller
         $mobile = $request->mobile;
         // $name = $request->name;
         $email = $request->email;
+        $code = $request->code;
 
         $refcode = $request->refcode;
 
@@ -95,6 +96,21 @@ class RegisterController extends Controller
                 $validator->getMessageBag()->add('refcode',__('error.register.ref_code'));
             }
 
+        }
+
+        //check OTP
+        $db = DB::select("SELECT code FROM sms_verification WHERE mobile = ? ORDER BY created_at DESC LIMIT 1", [$mobile]);
+
+        if(sizeof($db) > 0)
+        {
+            if($code != $db[0]->code)
+            {
+                $validator->getMessageBag()->add('code',__('error.register.invalid_otp'));
+            }
+        }
+        else
+        {
+            $validator->getMessageBag()->add('code',__('error.register.invalid_otp'));
         }
 
         //check username char
