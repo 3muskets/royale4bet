@@ -290,6 +290,22 @@ return [
     'bethistory.maindata.created_at' => 'Timestamp',
     'bethistory.maindata.game' => 'Game',
 
+    'bethistory.maindata.date' => 'Date',
+    'bethistory.maindata.amount' => 'Amount',
+    'bethistory.maindata.method' => 'Method',
+    'bethistory.maindata.type' => 'Type',
+    'bethistory.maindata.status' => 'Status',
+
+    'bethistory.maindata.type.deposit' => 'Deposit',
+    'bethistory.maindata.type.withdraw' => 'Withdrawal',
+
+    'bethistory.maindata.payment_type.bank_transfer' => 'Bank Transfer',
+    'bethistory.maindata.payment_type.FPX' => 'Online FPX',
+
+    'bethistory.maindata.status.pending' => 'Pending',
+    'bethistory.maindata.status.approved' => 'Approved',
+    'bethistory.maindata.status.rejected' => 'Rejected',
+
     'bethistory.title' => 'My Bets',
     'bethistory.date.from' => 'From',
     'bethistory.date.to' => 'to',

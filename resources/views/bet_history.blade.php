@@ -8,29 +8,6 @@
 		prepareLocale();
 
 		(function () {
-            $("#from").datetimepicker({
-                    timepicker: false,
-                    format: 'Y/m/d',
-                    theme: 'dark',
-                    closeOnDateSelect: true,
-                    // minDate: moment(),
-                    maxDate: '0',
-                    onChangeDateTime: function(dp,$input)
-                    {
-                    	startDate = $("#from").val();
-                    	$("#to").val("");
-                    	$("#to").datetimepicker({
-                    		minDate: startDate
-                    	})
-                    }
-                })
-
-            $("#to").datetimepicker({
-                    timepicker: false,
-                    format: 'Y/m/d',
-                    theme: 'dark',
-                    maxDate: '0'
-                })
 
             var nScrollHight = 0;
             var nScrollTop = 0;
@@ -48,7 +25,84 @@
 
 		utils.createSpinner("main-spinner");
 
-		// getMainData();
+		getMainData();
+
+        $("#btn-submit").click(function(e)
+        {
+            e.preventDefault();
+
+            getMainData();
+        });
+
+        var today = new Date().toISOString().split('T')[0];
+        var threedays = new Date(new Date().setDate(new Date().getDate() - 3)).toISOString().split('T')[0];
+        var oneweek = new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split('T')[0];
+        var onemonth = new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0];
+
+        $('.date').val(today);
+
+        $('.date').keypress(function(e) {
+            e.preventDefault();
+        });
+
+        $('#to').datepicker(
+        {
+            dateFormat: 'yyyy-mm-dd',
+            maxDate: new Date(),
+            autoClose: true,
+            onSelect: function(date)
+            {
+                var maxDate = new Date(date);
+
+                $("#from").datepicker(
+                {
+                    maxDate: maxDate,
+                });
+
+                if($('#from').val()>$('#to').val() || $('#from').val() == "")
+                {
+                    $("#from").val(new Date(maxDate).toISOString().split('T')[0]);
+                }
+            }
+        });
+
+        $("#from").datepicker(
+        {
+            dateFormat: 'yyyy-mm-dd',
+            maxDate: new Date(),
+            autoClose: true,
+        });
+
+        $("#today").on("click", function()
+        {
+            $('.btn-orange').removeClass("selected");
+            $('#today').addClass("selected");
+            $('.date').val(today);
+        });
+
+        $("#threedays").on("click", function()
+        {
+            $('.btn-orange').removeClass("selected");
+            $('#threedays').addClass("selected");
+            $('#from').val(threedays);
+            $('#to').val(today);
+        });
+
+        $("#oneweek").on("click", function()
+        {
+            $('.btn-orange').removeClass("selected");
+            $('#oneweek').addClass("selected");
+            $('#from').val(oneweek);
+            $('#to').val(today);
+        });
+
+        $("#onemonth").on("click", function()
+        {
+            $('.btn-orange').removeClass("selected");
+            $('#onemonth').addClass("selected");
+            $('#from').val(onemonth);
+            $('#to').val(today);
+        });
 
 	});
 
@@ -57,110 +111,124 @@
 		locale['mainData.product'] =  "{!! __('app.bethistory.maindata.product') !!}";
 		locale['mainData.turnover'] =  "{!! __('app.bethistory.maindata.turnover') !!}";
 		locale['mainData.winloss'] =  "{!! __('app.bethistory.maindata.winloss') !!}";
+
+        locale['mainData.date'] = "{!! __('app.bethistory.maindata.date') !!}";
+        locale['mainData.amount'] = "{!! __('app.bethistory.maindata.amount') !!}";
+        locale['mainData.method'] = "{!! __('app.bethistory.maindata.method') !!}";
+        locale['mainData.type'] = "{!! __('app.bethistory.maindata.type') !!}";
+        locale['mainData.status'] = "{!! __('app.bethistory.maindata.status') !!}";
+
+        locale['mainData.type.d'] = "{!! __('app.bethistory.maindata.type.deposit') !!}";
+        locale['mainData.type.w'] = "{!! __('app.bethistory.maindata.type.withdraw') !!}";
+
+        locale['mainData.status.p'] = "{!! __('app.bethistory.maindata.status.pending') !!}";
+        locale['mainData.status.a'] = "{!! __('app.bethistory.maindata.status.approved') !!}";
+        locale['mainData.status.r'] = "{!! __('app.bethistory.maindata.status.rejected') !!}";
+
+        locale['mainData.payment_type.d'] = "{!! __('app.bethistory.maindata.payment_type.bank_transfer') !!}";
+        locale['mainData.payment_type.f'] = "{!! __('app.bethistory.maindata.payment_type.FPX') !!}";
 	}
 
-	// function getMainData()
-	// {
-	// 	var containerId = "main-table";
+	function getMainData()
+	{
+		var containerId = "main-table";
 
-	// 	var data = utils.getDataTableDetails(containerId);
-	// 	data['prd_id'] = prdId;
-	// 	data['start_date'] = $("#from").val();
-	// 	data['end_date'] = $("#to").val();
+		var data = utils.getDataTableDetails(containerId);
+		data['type'] = $("#type").val();
+		data['start_date'] = $("#from").val();
+		data['end_date'] = $("#to").val();
 
-	// 	$("#main-spinner").show();
-	// 	$("#main-table").hide();
-	// 	$('#notes').hide();
+		$("#main-spinner").show();
+		$("#main-table").hide();
+		$('#notes').hide();
 
-	// 	$.ajax({
-	// 		type: "GET",
-	// 		url: "/ajax/bet/products",
-	// 		data: data,
-	// 		success: function(data)
-	// 		{
-	// 			mainData = JSON.parse(data);
-	// 			loadMainData(containerId);
-	// 		}
-	// 	});
-	// }
+		$.ajax({
+			type: "GET",
+			url: "/ajax/bet/history",
+			data: data,
+			success: function(data)
+			{
+				mainData = JSON.parse(data);
+				loadMainData(containerId);
+			}
+		});
+	}
 
-	// function loadMainData(containerId)
-	// {
-	// 	$("#main-spinner").hide();
-	//     $("#main-table").show();
+	function loadMainData(containerId)
+	{
+		$("#main-spinner").hide();
+	    $("#main-table").show();
 
-	//     var fields = [
-	//                     ["prd_name",locale['mainData.product'],false,false]
-	//                     ,["turnover",locale['mainData.turnover'],false,true]
-	//                     ,["win_loss",locale['mainData.winloss'],false,true]
-	//                 ];
+	    var fields = [
+	                    ["created_at",locale['mainData.date'],false,false]
+	                    ,["amount",locale['mainData.amount'],false,true]
+	                    ,["payment_type",locale['mainData.method'],false,true]
+                        ,["type",locale['mainData.type'],false,true]
+                        ,["status",locale['mainData.status'],false,true]
+	                ];
 
-	//     table = utils.createDataTable(containerId,mainData,fields,sortMainData,pagingMainData);
+	    table = utils.createDataTable(containerId,mainData,fields,sortMainData,pagingMainData);
 
-	//     if(table != null)
-	//     {   
-	//     	table.classList.remove("table-bordered");
-	//         $('#notes').show();
-	//         $("#total_record").hide();
+	    if(table != null)
+	    {   
+	    	table.classList.remove("table-bordered");
+	        $('#notes').show();
+	        $("#total_record").hide();
 
-	// 	    var fieldProduct = utils.getDataTableFieldIdx("prd_name",fields);
-	// 	    var fieldTurnover = utils.getDataTableFieldIdx("turnover",fields);
-	// 	    var fieldWinloss = utils.getDataTableFieldIdx("win_loss",fields);
+		    var fieldDate = utils.getDataTableFieldIdx("created_at",fields);
+		    var fieldAmount = utils.getDataTableFieldIdx("amount",fields);
+		    var fieldPayment = utils.getDataTableFieldIdx("payment_type",fields);
+            var fieldType = utils.getDataTableFieldIdx("type",fields);
+            var fieldStatus = utils.getDataTableFieldIdx("status",fields);
 
-	// 	    for(var i = 1, row; row = table.rows[i]; i++)
-	//         {
-	//         	var prdId = mainData.results[i-1]['prd_id'];
-	//         	var prdName = mainData.results[i-1]['prd_name'];
-	//         	var turnOver = mainData.results[i-1]['turnover'];
-	//         	var winLoss = mainData.results[i-1]['win_loss'];
+		    for(var i = 1, row; row = table.rows[i]; i++)
+	        {
+                var amount = mainData.results[i - 1]['amount'];
+                var paymentType = mainData.results[i - 1]['payment_type'];
+                var type = mainData.results[i - 1]['type'];
+                var status = mainData.results[i - 1]['status'];
 
-	//         	var product = document.createElement("a");
-	//         	product.href = "/bet_history?prd_id="+prdId;
-	//         	product.innerHTML = prdName;
-	//         	row.cells[fieldProduct].innerHTML = "";
-	//         	row.cells[fieldProduct].appendChild(product);
+                row.cells[fieldAmount].innerHTML = "";
+                row.cells[fieldAmount].innerHTML = utils.formatMoney(amount);
 
-	//         	row.cells[fieldTurnover].innerHTML = "";
-	//         	row.cells[fieldTurnover].innerHTML = utils.formatMoney(turnOver);
+                row.cells[fieldType].innerHTML = "";
+                row.cells[fieldType].innerHTML = locale['mainData.type.'+type];
 
-	//         	row.cells[fieldWinloss].innerHTML = "";
-	//         	row.cells[fieldWinloss].innerHTML = utils.formatMoney(winLoss);
-	//         }
+                row.cells[fieldPayment].innerHTML = "";
+                row.cells[fieldPayment].innerHTML = locale['mainData.payment_type.'+paymentType];    
 
-	//         var sumFields = [      
-	// 				            "turnover"
-	// 				            ,"win_loss"
-	// 				        ]; 
+                row.cells[fieldStatus].innerHTML = "";
+                row.cells[fieldStatus].innerHTML = locale['mainData.status.'+status];
 
-	//         utils.createSumForDataTable(table, mainData, mainData.results, fields, sumFields);
+                if(status == 'p')
+                {
+                    row.cells[fieldStatus].style.color = "grey"
+                }
+                else if(status == 'a')
+                {
+                    row.cells[fieldStatus].style.color = "green";
+                }
+                else
+                {
+                    row.cells[fieldStatus].style.color = "red";
+                }
+	        }
+		}
+	}
 
-	//         for (var j = 0, row; row = table.tFoot.rows[j]; j++) 
-	//         {
-	//         	var totalTurnover = parseFloat(row.cells[fieldTurnover].innerHTML);
-	//         	var totalWinloss = parseFloat(row.cells[fieldWinloss].innerHTML);
+	function sortMainData()
+	{
+	    utils.prepareDataTableSortData(this.containerId,this.orderBy);
 
-	//         	row.cells[fieldTurnover].innerHTML = "";
-	//         	row.cells[fieldTurnover].innerHTML = utils.formatMoney(totalTurnover);
+	    getMainData();
+	}
 
-	//         	row.cells[fieldWinloss].innerHTML = "";
-	//         	row.cells[fieldWinloss].innerHTML = utils.formatMoney(totalWinloss);
-	//         }
-	// 	}
-	// }
+	function pagingMainData()
+	{
+	    utils.prepareDataTablePagingData(this.containerId,this.page);
 
-	// function sortMainData()
-	// {
-	//     utils.prepareDataTableSortData(this.containerId,this.orderBy);
-
-	//     getMainData();
-	// }
-
-	// function pagingMainData()
-	// {
-	//     utils.prepareDataTablePagingData(this.containerId,this.page);
-
-	//     getMainData();
-	// }
+	    getMainData();
+	}
 
 </script>
 
@@ -169,6 +237,7 @@
 	{
 		padding: 0;
 		font-size: 12px;
+        color: black;
 	}
 	select,input
     {
@@ -242,6 +311,27 @@
         width: 1em;
         margin-left: -1em;
     }
+    #main-table thead
+    {
+        background: linear-gradient(180deg,#a50037,#000);
+        color: white;
+    }
+    #main-table tbody td
+    {
+        text-align: left !important;
+    }
+    #btn-submit
+    {
+        color: #ffffff;
+        margin: 0;
+        padding: 0;
+        border-radius: 5px;
+        border:0;
+        background: #CF2029;
+        padding: 5px;
+        min-width: 50px;
+        cursor: pointer;
+    }
 </style>
 @endsection
 
@@ -254,46 +344,54 @@
 
             	<form id="mainForm">
             		<div class="form-group row" style="align-items: center">
-                        <label class="col-sm-2 col-form-label">Transaction Type: <span style="color:red">*</span></label>
+                        <label class="col-sm-3 col-form-label">Transaction Type: <span style="color:red">*</span></label>
                         <div class="col-sm-3">
-                            <select name="type">
+                            <select name="type" id="type">
                             	<option value="d">Deposit</option>
                             	<option value="w">Withdraw</option>
-                            	<option value="promo">Promotion</option>
-                            	<option value="bonus">Bonus</option>
+<!--                             	<option value="promo">Promotion</option>
+                            	<option value="bonus">Bonus</option> -->
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group row" style="align-items: center">
-                        <label class="col-sm-2 col-form-label">Transaction Date: <span style="color:red">*</span></label>
-                        <div class="col-sm-3">
-                            <input type="date" id="start_dt" name="start_dt">
-    						<span style="color: #000">to</span>
-    						<input type="date" id="end_dt" name="end_dt">
+                        <label class="col-sm-3 col-form-label">Transaction Date: <span style="color:red">*</span></label>
+                        <div class="col-sm">
+                            <input type="text" class="input-custom date" id="from" data-language="en" name="start_date">
+    						<span style="color: #000">~</span>
+                            <input type="text" class="input-custom date" id="to" data-language="en" name="end_date">
                         </div>
                     </div>
 
                     <div class="form-group row" style="align-items: center">
-                        <label class="col-sm-2 col-form-label"></label>
+                        <label class="col-sm-3 col-form-label"></label>
                         <div class="col-sm">
-                            <div class="px-2 py-1" style="display:inline-block;cursor:pointer;white-space:nowrap;background:#F0F0F0;border-radius:5px;color:grey">
+                            <div class="px-2 py-1" id="today" style="display:inline-block;cursor:pointer;white-space:nowrap;background:#F0F0F0;border-radius:5px;color:grey">
                             	Today
                             </div>
 
-                            <div class="px-2 py-1" style="display:inline-block;cursor:pointer;white-space:nowrap;background:#F0F0F0;border-radius:5px;color:grey">
+                            <div class="px-2 py-1" id="threedays" style="display:inline-block;cursor:pointer;white-space:nowrap;background:#F0F0F0;border-radius:5px;color:grey">
                             	In 3 days
                             </div>
 
-                            <div class="px-2 py-1" style="display:inline-block;cursor:pointer;white-space:nowrap;background:#F0F0F0;border-radius:5px;color:grey">
+                            <div class="px-2 py-1" id="oneweek" style="display:inline-block;cursor:pointer;white-space:nowrap;background:#F0F0F0;border-radius:5px;color:grey">
                             	In a week
                             </div>
 
-                            <div class="px-2 py-1" style="display:inline-block;cursor:pointer;white-space:nowrap;background:#F0F0F0;border-radius:5px;color:grey">
+                            <div class="px-2 py-1" id="onemonth" style="display:inline-block;cursor:pointer;white-space:nowrap;background:#F0F0F0;border-radius:5px;color:grey">
                             	In a month
                             </div>
                         </div>
                     </div>
+
+                    <div class="form-group row" style="align-items: center">
+                        <label class="col-sm-3 col-form-label"></label>
+                        <div class="col-sm">
+                            <button type="submit" id="btn-submit">Search</button>
+                        </div>
+                    </div>
+
             	</form>
 
             </div>
@@ -302,18 +400,16 @@
 
     <div style="background:white;border-radius:5px; margin-top: 10px;">
         <div class="py-4 px-2">
-            <div class="container-fluid">
 
             	<div class="card">
 
 		            <div id="main-spinner" class="card-body"></div>
 
-		            <div id="main-table" class="card-body"></div>
+		            <div id="main-table" class="card-body" style="padding: 5px;"></div>
 
 		            <!-- <div id="notes" class="card-body"></div> -->
 
 		        </div>
-            </div>
         </div>
     </div>
 </div>

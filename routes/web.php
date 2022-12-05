@@ -93,7 +93,7 @@ Route::post('/ajax/wallet/transfer', 'DWController@transfer');
 Route::post('/ajax/dw/crypto-create', 'ViewControllers\DWViewController@createCrypto');
 Route::get('/ajax/dw/crypto-rate', 'ViewControllers\DWViewController@getCryptoRate');
 
-Route::get('/ajax/bet/products', 'ViewControllers\BetHistoryViewController@getProducts');
+Route::get('/ajax/bet/history', 'ViewControllers\BetHistoryViewController@getProducts');
 Route::get('/ajax/bet/details', 'ViewControllers\BetHistoryViewController@getDetails');
 
 Route::get('/ajax/bet/transaction/details', 'BetHistoryController@getBetResults');

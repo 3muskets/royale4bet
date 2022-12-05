@@ -15,8 +15,9 @@
     <script src="{{ asset('js/utils.js') }}"></script>
 
     <!-- JqueryUI -->
-    <script src="/jquery/jquery.datetimepicker.js"></script>
-    <link href="/jquery/jquery.datetimepicker.min.css" rel="stylesheet">
+    <script src="/air-datepicker/dist/js/datepicker.min.js"></script>
+    <script src="/air-datepicker/dist/js/i18n/datepicker.en.js"></script>
+    <script src="/air-datepicker/dist/js/i18n/datepicker.ko.js"></script>
 
     <!-- Fonts -->
     <!-- <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet"> -->
@@ -26,6 +27,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="/air-datepicker/dist/css/datepicker.min.css" rel="stylesheet" type="text/css">
 
     <script type="text/javascript">
 
@@ -134,7 +136,7 @@
             {
                 var hash = window.location.hash.substring(1);
 
-                if(hash == 'casino' || hash == 'slots' || hash == 'sports')
+                if(hash == 'hot' || hash == 'casino' || hash == 'slots' || hash == 'sports')
                 {
                     showSection(hash);
 
@@ -144,9 +146,25 @@
                 }
                 else
                 {
-                    showSection('casino');
+                    showSection('hot');
                 }
             }
+
+
+            //restore main wallet
+            $("#restore-btn").click(function(e)
+            {
+                e.preventDefault();
+
+                $.ajax({
+                    type: "GET",
+                    url: "/ajax/wallet/restore",
+                    success: function(data)
+                    {
+
+                    }
+                });
+            });
 
         });
 
@@ -327,6 +345,7 @@
 
         function showSection(elem)
         {
+            $('#section-hot').css({display:'none'});
             $('#section-casino').css({display:'none'});
             $('#section-slots').css({display:'none'});
             $('#section-sports').css({display:'none'});
@@ -334,6 +353,8 @@
             $('#section-lottery').css({display:'none'});
             $('#section-esport').css({display:'none'});
 
+            $('#menu-section-hot').removeClass('selected');
+            $('#menu-mobile-section-hot').removeClass('selected');
             $('#menu-section-casino').removeClass('selected');
             $('#menu-mobile-section-casino').removeClass('selected');
             $('#menu-section-slots').removeClass('selected');
@@ -953,6 +974,9 @@
                 <div>{{ __('app.header.welcome') }}, {{ Auth::user()->username }}</div>
                 <span>{{ __('app.header.balance') }} : {{ $userCurrency }}</span>
                 <span id="balance">{{ Helper::formatMoney($userBalance) }}</span>
+                <div id="restore-btn" style="background: url('/images/app/more/wallet.png'); background-repeat: round; height: 50px; display: flex; align-items: center; justify-content: center; margin-top: 10px; cursor: pointer;">
+                    <span style="margin-left: 30px;">RESTORE <i class="fa fa-spin fa-spinner" style="display: none"></i></span>
+                </div>
             </div>
 
         @endguest
@@ -962,7 +986,7 @@
         </div>
 
         <div class="mx-2 my-2 d-none d-md-block" style="">
-            <a href="/" class="menu-link">
+            <a id="menu-section-hot" href="javascript:showSection('hot')" class="menu-link">
                 <div class="" style="width:100%;padding:8px 8px">
                     <img src="/images/app/menu/popular.png" style="height:40px">
                     <span class="pl-2">HOT GAMES</span>
@@ -971,7 +995,7 @@
         </div>
 
         <div class="mx-2 my-2 d-block d-md-none" style="">
-            <a href="/" class="menu-link-mobile">
+            <a id="menu-mobile-section-hot" href="javascript:showSection('hot')" class="menu-link-mobile">
                 <div class="d-flex align-items-center flex-column" style="width:100%;padding:8px 2px">
                     <img src="/images/app/menu/popular.png" style="height:40px">
                     <span><center>HOT GAMES</center></span>
@@ -1033,7 +1057,7 @@
             </a>
         </div>
 
-        <div class="mx-2 my-2 d-none d-md-block" style="">
+        <!-- <div class="mx-2 my-2 d-none d-md-block" style="">
             <a id="menu-section-fishing" href="javascript:showSection('fishing')" class="menu-link">
                 <div class="" style="width:100%;padding:8px 8px">
                     <img src="/images/app/menu/fishing.png" style="height:40px">
@@ -1049,7 +1073,7 @@
                     <span><center>FISHING</center></span>
                 </div>
             </a>
-        </div>
+        </div> -->
 
 <!--         <div class="mx-2 my-2 d-none d-md-block" style="">
             <a href="/" class="menu-link">
@@ -1138,15 +1162,12 @@
                                             
                                             <span class="footer-title">Information</span>
                                             <br>
-                                            <a class="footer-link" href="/">Terms & Conditions</a>
+                                            <a class="footer-link" href="/tnc/tnc.pdf" target="_blank">Terms & Conditions</a>
                                             <br>
-                                            <a class="footer-link" href="/">About us</a>
+                                            <a class="footer-link" href="/tnc/about_us.pdf" target="_blank">About us</a>
                                             <br>
-                                            <a class="footer-link" href="/">Privacy policy</a>
+                                            <a class="footer-link" href="/tnc/responsible_gaming" target="_blank">Responsible Gaming</a>
                                             <br>
-                                            <a class="footer-link" href="/">Responsible Gaming</a>
-                                            <br>
-                                            <a class="footer-link" href="/">Banking</a>
 
                                         </div>
 
@@ -1164,16 +1185,9 @@
                                             
                                             <span class="footer-title">Payment Method</span>
                                             <br>
-                                            <img src="/images/app/footer/bitcoin.png" style="width:30px;padding-top:10px">
-                                            <img src="/images/app/footer/tether.png" style="width:40px;padding-left:5px;padding-top:10px">
-                                            <img src="/images/app/footer/ethereum.png" style="width:25px;padding-left:5px;padding-top:10px">
-                                            <br>
                                             <img src="/images/app/footer/visa.png" style="width:40px;padding-top: 20px">
                                             <img src="/images/app/footer/master.png" style="width:40px;padding-left:5px;padding-top: 20px">
                                             <img src="/images/app/footer/fpx.png" style="width:50px;padding-left:5px;padding-top: 20px">
-                                            <br>
-                                            <img src="/images/app/footer/duitnow.png" style="width:40px;padding-top: 20px">
-                                            <img src="/images/app/footer/tng.png" style="width:40px;padding-left:5px;padding-top: 20px">
 
                                         </div>
 
@@ -1185,7 +1199,7 @@
 
                                         </div>
 
-                                        <div class="col-6 col-md-4 col-xl pb-5">
+                                        <!-- <div class="col-6 col-md-4 col-xl pb-5">
                                             
                                             <span class="footer-title">Follow Us</span>
                                             <br>
@@ -1202,7 +1216,7 @@
                                                 <img src="/images/app/footer/twitter.png" style="width:35px;padding-top:10px">
                                             </a>
 
-                                        </div>
+                                        </div> -->
 
                                     </div>
 
@@ -1442,7 +1456,7 @@
                     </div>
                     <div class="col-6 p-1">
                         <button type="button" class="btn btn-secondary w-100" onclick="event.preventDefault();document.getElementById('locale').value = 'zh-cn';document.getElementById('form-locale').submit();">
-                            中文
+                            BAHASA MELAYU
                         </button>
                     </div>
                 </div>

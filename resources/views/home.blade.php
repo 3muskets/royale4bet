@@ -23,7 +23,7 @@
 	{
 		max-width: 100%;
 		border-radius: 10px;
-
+		object-fit: contain;
 	}
 
 	.icon-box-overlay
@@ -269,13 +269,13 @@
 
 <br>
 
-<div id="section-casino" class="container" style="display:none">
+<div id="section-hot" class="container" style="display:none">
 
 	<div class="row py-4">
 
-		<div class="col-6 col-md-4 col-lg-3 pb-3">
+		<div class="col-6 col-md-4 pb-3">
 			
-			<a class="game-launcher" href="{{ route('game',['gameId' => 1001,'type' => 0, 'isMobile' => 0]) }}">
+			<a class="game-launcher" target="_blank" href="{{ route('game',['gameId' => 1001,'type' => 0, 'isMobile' => 0]) }}">
 				<div class="icon-box">
 					<img class="icon-box-img" src="/images/home/casino/evo1.png">
 					<div class="d-flex flex-column justify-content-center align-items-center icon-box-overlay">
@@ -288,9 +288,92 @@
 			</a>
 		</div>
 
-		<div class="col-6 col-md-4 col-lg-3 pb-3">
+		<div class="col-6 col-md-4 pb-3">
 			
-			<a class="game-launcher" href="{{ route('game',['gameId' => 1003,'type' => 0, 'isMobile' => 0]) }}">
+			<a class="game-launcher" href="{{ route('game',['gameId' => 1008]) }}">
+				<div class="icon-box">
+					<img class="icon-box-img" src="/images/home/slots2/mega.png">
+					<div class="d-flex flex-column justify-content-center align-items-center icon-box-overlay">
+						<div class="icon-box-play">
+							<span class="fa fa-play" >&nbsp;</span>
+							<span>{{ __('app.home.playnow') }}</span>
+						</div>
+					</div>
+				</div>
+			</a>
+		</div> 
+
+		<div class="col-6 col-md-4 pb-3">
+			
+			<a class="game-launcher" href="{{ route('game',['gameId' => 1009]) }}">
+				<div class="icon-box">
+					<img class="icon-box-img" src="/images/home/slots2/918.png">
+					<div class="d-flex flex-column justify-content-center align-items-center icon-box-overlay">
+						<div class="icon-box-play">
+							<span class="fa fa-play" >&nbsp;</span>
+							<span>{{ __('app.home.playnow') }}</span>
+						</div>
+					</div>
+				</div>
+			</a>
+		</div> 
+
+		<div class="col-6 col-md-4 pb-3">
+			
+			<a class="game-launcher" href="{{ route('game',['gameId' => 1011]) }}">
+				<div class="icon-box">
+					<img class="icon-box-img" src="/images/home/slots2/pussy.png">
+					<div class="d-flex flex-column justify-content-center align-items-center icon-box-overlay">
+						<div class="icon-box-play">
+							<span class="fa fa-play" >&nbsp;</span>
+							<span>{{ __('app.home.playnow') }}</span>
+						</div>
+					</div>
+				</div>
+			</a>
+		</div> 
+
+	</div>
+
+</div>
+
+<div id="section-casino" class="container" style="display:none">
+
+	<div class="row py-4">
+
+		<div class="col-6 col-md-4 pb-3">
+			
+			<a class="game-launcher" target="_blank" href="{{ route('game',['gameId' => 1001,'type' => 0, 'isMobile' => 0]) }}">
+				<div class="icon-box">
+					<img class="icon-box-img" src="/images/home/casino/evo1.png">
+					<div class="d-flex flex-column justify-content-center align-items-center icon-box-overlay">
+						<div class="icon-box-play">
+							<span class="fa fa-play" >&nbsp;</span>
+							<span>{{ __('app.home.playnow') }}</span>
+						</div>
+					</div>
+				</div>
+			</a>
+		</div>
+
+		<div class="col-6 col-md-4 pb-3">
+			
+			<a class="game-launcher" target="_blank" href="{{ route('game',['gameId' => 1004,'type' => 0, 'isMobile' => 0]) }}">
+				<div class="icon-box">
+					<img class="icon-box-img" src="/images/home/casino/ab.png">
+					<div class="d-flex flex-column justify-content-center align-items-center icon-box-overlay">
+						<div class="icon-box-play">
+							<span class="fa fa-play" >&nbsp;</span>
+							<span>{{ __('app.home.playnow') }}</span>
+						</div>
+					</div>
+				</div>
+			</a>
+		</div>
+
+		<div class="col-6 col-md-4 pb-3">
+			
+			<a class="game-launcher" target="_blank" href="{{ route('game',['gameId' => 1003,'type' => 0, 'isMobile' => 0]) }}">
 				<div class="icon-box">
 					<img class="icon-box-img" src="/images/home/casino/sa1.png">
 					<div class="d-flex flex-column justify-content-center align-items-center icon-box-overlay">
@@ -313,7 +396,7 @@
 
 	<div class="row py-4">
 
-		<div class="col-6 col-md-4 col-lg-3 pb-3">
+		<div class="col-6 col-md-4 pb-3">
 			
 			<a class="game-launcher" href="{{ route('lobby',['gameId' => 1006]) }}">
 				<div class="icon-box">
@@ -328,11 +411,71 @@
 			</a>
 		</div> 
 
-		<div class="col-6 col-md-4 col-lg-3 pb-3">
+		<div class="col-6 col-md-4 pb-3">
 			
 			<a class="game-launcher" href="{{ route('lobby',['gameId' => 1007]) }}">
 				<div class="icon-box">
 					<img class="icon-box-img" src="/images/home/slots2/xe88.png">
+					<div class="d-flex flex-column justify-content-center align-items-center icon-box-overlay">
+						<div class="icon-box-play">
+							<span class="fa fa-play" >&nbsp;</span>
+							<span>{{ __('app.home.playnow') }}</span>
+						</div>
+					</div>
+				</div>
+			</a>
+		</div> 
+
+		<div class="col-6 col-md-4 pb-3">
+			
+			<a class="game-launcher" href="{{ route('game',['gameId' => 1008]) }}">
+				<div class="icon-box">
+					<img class="icon-box-img" src="/images/home/slots2/mega.png">
+					<div class="d-flex flex-column justify-content-center align-items-center icon-box-overlay">
+						<div class="icon-box-play">
+							<span class="fa fa-play" >&nbsp;</span>
+							<span>{{ __('app.home.playnow') }}</span>
+						</div>
+					</div>
+				</div>
+			</a>
+		</div> 
+
+		<div class="col-6 col-md-4 pb-3">
+			
+			<a class="game-launcher" href="{{ route('game',['gameId' => 1009]) }}">
+				<div class="icon-box">
+					<img class="icon-box-img" src="/images/home/slots2/918.png">
+					<div class="d-flex flex-column justify-content-center align-items-center icon-box-overlay">
+						<div class="icon-box-play">
+							<span class="fa fa-play" >&nbsp;</span>
+							<span>{{ __('app.home.playnow') }}</span>
+						</div>
+					</div>
+				</div>
+			</a>
+		</div> 
+
+		<div class="col-6 col-md-4 pb-3">
+			
+			<a class="game-launcher" href="{{ route('game',['gameId' => 1010]) }}">
+				<div class="icon-box">
+					<img class="icon-box-img" src="/images/home/slots2/scr.png">
+					<div class="d-flex flex-column justify-content-center align-items-center icon-box-overlay">
+						<div class="icon-box-play">
+							<span class="fa fa-play" >&nbsp;</span>
+							<span>{{ __('app.home.playnow') }}</span>
+						</div>
+					</div>
+				</div>
+			</a>
+		</div> 
+
+		<div class="col-6 col-md-4 pb-3">
+			
+			<a class="game-launcher" href="{{ route('game',['gameId' => 1011]) }}">
+				<div class="icon-box">
+					<img class="icon-box-img" src="/images/home/slots2/pussy.png">
 					<div class="d-flex flex-column justify-content-center align-items-center icon-box-overlay">
 						<div class="icon-box-play">
 							<span class="fa fa-play" >&nbsp;</span>
@@ -352,7 +495,7 @@
 
 	<div class="row py-4">
 
-		<div class="col-6 col-md-4 col-lg-3 pb-3">
+		<div class="col-6 col-md-4 pb-3">
 			
 			<a class="game-launcher" target="_blank" href="{{ route('game',['gameId' => 1000]) }}">
 				<div class="icon-box">
@@ -367,9 +510,9 @@
 			</a>
 		</div>
 
-		<div class="col-6 col-md-4 col-lg-3 pb-3">
+		<div class="col-6 col-md-4 pb-3">
 			
-			<a class="game-launcher" href="{{ route('game',['gameId' => 1002, 'type' => 3, 'isMobile' => 0]) }}">
+			<a class="game-launcher" target="_blank" href="{{ route('game',['gameId' => 1002, 'type' => 3, 'isMobile' => 0]) }}">
 				<div class="icon-box">
 					<img class="icon-box-img" src="/images/home/sb/ibc.png">
 					<div class="d-flex flex-column justify-content-center align-items-center icon-box-overlay">

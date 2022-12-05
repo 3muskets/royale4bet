@@ -26,7 +26,7 @@ class BetHistoryController extends Controller
     }
 
     /**
-     * Show the application dashboard.
+ * Show the application dashboard.
      *
      * @return \Illuminate\Http\Response
      */
@@ -39,6 +39,8 @@ class BetHistoryController extends Controller
 
             $startDate = $request->input('start_date');
             $endDate = $request->input('end_date');
+
+            $type = $request->input('type');
 
             if($startDate == NULL)
                 $startDate = '';
@@ -54,78 +56,26 @@ class BetHistoryController extends Controller
             $orderBy = $request->input('order_by');
             $orderType = $request->input('order_type');
 
-            $sql = "
-                    SELECT '1' AS 'prd_id'
-                        ,SUM(a.amount) 'turnover'
-                        ,SUM(b.amount - a.amount) 'win_loss'
-                    FROM aas_debit a
-                    INNER JOIN aas_credit b 
-                        ON a.txn_id = b.txn_id
-                    WHERE a.member_id= :id1
-                        AND a.prd_id = 9
-                        AND ((b.created_at + INTERVAL 4 HOUR) >= :start_date OR '' = :start_date1)
-                        AND ((b.created_at + INTERVAL 4 HOUR) <= :end_date OR '' = :end_date1)
+            log::debug($startDate);
+            log::debug($endDate);
 
-                    UNION ALL
-
-                    SELECT '2' AS 'prd_id'
-                        ,SUM(a.amount) 'turnover'
-                        ,SUM(b.amount - a.amount) 'win_loss'
-                    FROM haba_debit a
-                    INNER JOIN haba_credit b 
-                        ON a.txn_id = b.txn_id
-                    WHERE a.member_id= :id2
-                        AND ((b.created_at + INTERVAL 4 HOUR) >= :start_date2 OR '' = :start_date3)
-                        AND ((b.created_at + INTERVAL 4 HOUR) <= :end_date2 OR '' = :end_date3)
-
-                    UNION ALL
-
-                    SELECT '3' AS 'prd_id'
-                        ,SUM(a.amount) 'turnover'
-                        ,SUM(b.amount - a.amount) 'win_loss'
-                    FROM pp_debit a
-                    INNER JOIN pp_credit b 
-                        ON a.txn_id = b.txn_id
-                    WHERE a.member_id= :id3
-                        AND ((b.created_at + INTERVAL 4 HOUR) >= :start_date4 OR '' = :start_date5)
-                        AND ((b.created_at + INTERVAL 4 HOUR) <= :end_date4 OR '' = :end_date5)
-
-                    UNION ALL
-
-                    SELECT '4' AS 'prd_id'
-                        ,SUM(a.amount) 'turnover'
-                        ,SUM(b.amount - a.amount) 'win_loss'
-                    FROM aas_debit a
-                    INNER JOIN aas_credit b 
-                        ON a.txn_id = b.txn_id
-                    WHERE a.member_id= :id4
-                        AND a.prd_id = 208
-                        AND ((b.created_at + INTERVAL 4 HOUR) >= :start_date6 OR '' = :start_date7)
-                        AND ((b.created_at + INTERVAL 4 HOUR) <= :end_date6 OR '' = :end_date7)
-                    ";
+            $sql = "SELECT id, amount, status, payment_type, type, (created_at + INTERVAL 8 HOUR) as 'created_at'
+                    FROM member_dw
+                    WHERE member_id = :member_id
+                    AND type = :type
+                    AND (created_at >= :start_date OR '' = :start_date2)
+                    AND (created_at <= :end_date OR '' = :end_date2)
+                    ORDER BY created_at DESC";
 
             $params = [
-                        'id1' => $userId
+                        'member_id' => $userId
+                        ,'type' => $type
                         ,'start_date' => $startDate
-                        ,'start_date1' => $startDate
-                        ,'end_date' => $endDate
-                        ,'end_date1' => $endDate
-                        ,'id2' => $userId
                         ,'start_date2' => $startDate
-                        ,'start_date3' => $startDate
+                        ,'end_date' => $endDate
                         ,'end_date2' => $endDate
-                        ,'end_date3' => $endDate
-                        ,'id3' => $userId
-                        ,'start_date4' => $startDate
-                        ,'start_date5' => $startDate
-                        ,'end_date4' => $endDate
-                        ,'end_date5' => $endDate
-                        ,'id4' => $userId
-                        ,'start_date6' => $startDate
-                        ,'start_date7' => $startDate
-                        ,'end_date6' => $endDate
-                        ,'end_date7' => $endDate
                     ];
+
 
             $orderByAllow = [];
             $orderByDefault = '';
@@ -133,13 +83,6 @@ class BetHistoryController extends Controller
             $sql = Helper::appendOrderBy($sql,$orderBy,$orderType,$orderByAllow,$orderByDefault);
              
             $data = Helper::paginateData($sql,$params,$page);
-
-            $aryProduct = self::getOptionsProduct();
-
-            foreach($data['results'] as $d)
-            {
-                $d->prd_name = Helper::getOptionsValue($aryProduct, $d->prd_id);
-            }
 
             return Response::make(json_encode($data), 200);
         }
