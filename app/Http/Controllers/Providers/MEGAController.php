@@ -44,38 +44,6 @@ class MEGAController extends Controller
         return $locale[App::getLocale()];
     }
 
-    // public static function mapProduct()
-    // {
-    //     $product = array(
-    //                 Providers::Gameplay  => env('GS_PROVIDER_GAMEPLAY_CODE')
-    //                 ,Providers::BBIN  => env('GS_PROVIDER_BBIN_CODE')
-    //                 ,Providers::IBC  => env('GS_PROVIDER_IBC_CODE')
-    //                 ,Providers::ALLBET  => env('GS_PROVIDER_ALLBET_CODE')
-    //                 ,Providers::CQ9  => env('GS_PROVIDER_CQ9_CODE')
-    //                 ,Providers::WM  => env('GS_PROVIDER_WM_CODE')
-    //             );
-
-    //     return $product;
-    // }
-
-    // public static function mapGameType($type)
-    // {
-    //     $product = array(
-    //                 1  => 'LC' //LIVE-CASINO 真人视讯游戏
-    //                 ,2  => 'SL' //SLOTS 老虎机游戏
-    //                 ,3 => 'SB' //SPORTBOOK 体育游戏
-    //                 ,4  => 'FH' //FISH HUNTER 捕鱼游戏
-    //                 ,5  => 'LK' //LOTTO 彩票游戏
-    //                 ,6  => 'ES' //E-GAMES 电子游戏
-    //                 ,7  => 'PK' //POKER 扑克游戏
-    //                 ,8  => 'MG' //MINI GAME 迷你游戏
-    //                 ,9  => 'OT' //OTHERS 其他游戏
-    //                 ,10  => 'CB' //CARD & BOARDGAME 棋牌游戏
-    //             );
-
-    //     return $product[$type];
-    // }
-
     public static function createMember()
     {
         try 
@@ -379,14 +347,14 @@ class MEGAController extends Controller
 
             if (isset($response['error']) && $response['error'] != NULL) 
             {
-                return ['success' => 0, 'error_code' => $response['error']['code']];
+                return ['status' => 0, 'error_code' => $response['error']['code']];
             }
 
             $db = DB::select("SELECT login_id FROM mega_users WHERE member_id = ?",[Auth::id()]);
 
             $loginId = $db[0]->login_id;
 
-            return ['success' => 1, 'error_code' => $response['error'], 'launch_url' => $response['result'], 'login_id' => $loginId];
+            return ['status' => 1, 'error_code' => $response['error'], 'iframe' => $response['result'], 'login_id' => $loginId];
         } 
         catch (Exception $e) 
         {

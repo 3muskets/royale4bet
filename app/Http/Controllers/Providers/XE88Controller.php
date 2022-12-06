@@ -91,32 +91,6 @@ class XE88Controller extends Controller
             }
 
             return $gameUrl;
-
-            $requestbody = '{"agentid":"'.$agentId.'","account":"'.$username.'","password":"'.$password.'"}';
-
-            $hashdata = hash_hmac("sha256", $requestbody, $signaturekey, true);
-
-            $hash = base64_encode($hashdata);
-
-            $headerstring = 'hashkey: ' . $hash;
-
-            $headers = [
-                $headerstring
-            ];
-
-            $url = $url.'player/create';
-
-            $response = Helper::postData($url,$requestbody,$headers);
-            $response = json_decode($response,true);
-
-            if (isset($response['code']) && ($response['code'] == 0 || $response['code'] == 31))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         } 
         catch (Exception $e) 
         {

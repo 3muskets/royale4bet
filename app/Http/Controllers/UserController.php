@@ -174,32 +174,115 @@ class UserController extends Controller
     {
         try
         {
-            $userId =  Auth::id();
+            $userId = Auth::id();
 
-            //check member is it firsttime user
+            $todayDate = NOW();
+            $todayStartDate = date('Y-m-d 00:00:00',strtotime($todayDate. '+8 hours'));
+            $todayEndDate = date('Y-m-d 23:59:59',strtotime($todayDate. '+8 hours'));
+            $prevWeekDate = date('Y-m-d 00:00:00',strtotime($todayDate. '-7days +8 hours'));
+            $prevMonthDate = date('Y-m-d 00:00:00',strtotime($todayDate. '-1months +8 hours'));
+
+            //check have pending promo or not
             $db = DB::select("
-                    SELECT id 
-                    FROM member_dw
-                    WHERE (status = 'a' 
-                    OR status = 'p')
-                    AND member_id = ?
-                    ",[$userId]
-                );
+                SELECT id
+                FROM member_promo_turnover
+                WHERE member_id = ? AND
+                status = 'p'
+                ",[$userId]
+            );
 
-            if(sizeof($db) == 0)
+
+            if(sizeof($db) != 0)
             {
-                //get promo list
-                $db = DB::select("
-                        SELECT promo_id,promo_name
-                        FROM promo_setting");
+                return [];
             }
-            else
-            {
-                $db = DB::select("
-                        SELECT promo_id,promo_name
-                        FROM promo_setting
-                        WHERE promo_id != 1");                
-            }
+
+
+            $db = DB::select("
+                SELECT *
+                FROM 
+                (
+                    SELECT 
+                    a.*
+                    FROM promo_setting a
+                    LEFT JOIN                     
+                    (SELECT promo_id,MAX(created_at) 'created_at',member_id,status
+                     FROM member_dw 
+                     WHERE member_id = ?
+                     GROUP BY promo_id,member_id,status
+                    ) AS b 
+                    ON a.promo_id = b.promo_id
+                    WHERE a.type = 'd' AND a.status = 'a'
+                    AND a.start_date <= ? AND a.end_date >= ?
+                    AND (b.status = 'a' OR b.status IS NULL)
+                    AND ((b.created_at+INTERVAL 8 HOUR) < ? OR b.created_at IS NULL)
+                    GROUP BY a.promo_id
+                    UNION ALL 
+                    SELECT 
+                    a.*
+                    FROM promo_setting a
+                    LEFT JOIN                     
+                    (SELECT promo_id,MAX(created_at) 'created_at',member_id,status
+                     FROM member_dw 
+                     WHERE member_id = ?
+                     GROUP BY promo_id,member_id,status
+                    ) AS b 
+                    ON a.promo_id = b.promo_id
+                    WHERE a.type = 'w' AND a.status = 'a'
+                    AND a.start_date <= ? AND a.end_date >= ?
+                    AND (b.status = 'a' OR b.status IS NULL)
+                    AND ((b.created_at+INTERVAL 8 HOUR) < ? OR b.created_at IS NULL)
+                    GROUP BY a.promo_id
+                    UNION ALL 
+                    SELECT 
+                    a.*
+                    FROM promo_setting a
+                    LEFT JOIN                     
+                    (SELECT promo_id,MAX(created_at) 'created_at',member_id,status
+                     FROM member_dw 
+                     WHERE member_id = ?
+                     GROUP BY promo_id,member_id,status
+                    ) AS b 
+                    ON a.promo_id = b.promo_id
+                    WHERE a.type = 'm' AND a.status = 'a'
+                    AND a.start_date <= ? AND a.end_date >= ?
+                    AND (b.status = 'a' OR b.status IS NULL)
+                    AND ((b.created_at+INTERVAL 8 HOUR) < ? OR b.created_at IS NULL)
+                    GROUP BY a.promo_id
+                    UNION ALL 
+                    SELECT 
+                    a.*
+                    FROM promo_setting a
+                    LEFT JOIN                     
+                    (SELECT promo_id,MAX(created_at) 'created_at',member_id,status
+                     FROM member_dw 
+                     WHERE member_id = ?
+                     GROUP BY promo_id,member_id,status
+                    ) AS b 
+                    ON a.promo_id = b.promo_id
+                    WHERE a.type = 'f' AND a.status = 'a'
+                    AND a.start_date <= ? AND a.end_date >= ?
+                    GROUP BY a.promo_id
+                ) as a 
+                ORDER BY a.promo_id
+                ",[
+                    $userId
+                   ,$todayStartDate
+                   ,$todayStartDate
+                   ,$todayStartDate
+                   ,$userId
+                   ,$todayStartDate
+                   ,$todayStartDate
+                   ,$prevWeekDate
+                   ,$userId
+                   ,$todayStartDate
+                   ,$todayStartDate
+                   ,$prevMonthDate
+                   ,$userId
+                   ,$todayStartDate
+                   ,$todayStartDate
+                ]);
+
 
 
             return $db;
@@ -207,7 +290,7 @@ class UserController extends Controller
         }
         catch(\Exception $e)
         {
-            Log::Debug($e);
+            Log::debug($e);
 
             return [];
         }

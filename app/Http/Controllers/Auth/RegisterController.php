@@ -232,7 +232,7 @@ class RegisterController extends Controller
                         'password' => Hash::make($data['password']),
                         'status' => 'a',
                         'suspended' => 0,
-                        'admin_id' => 0,
+                        'admin_id' => 1,
                         'referral_id' => $data['refcode'],
                         // 'fullname' => $data['name'],
                         'mobile' => $data['mobile'],

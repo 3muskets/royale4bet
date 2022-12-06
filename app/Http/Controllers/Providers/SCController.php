@@ -63,6 +63,8 @@ class SCController extends Controller
             $response = Helper::getData($url);
             $response = json_decode($response,true);
 
+            log::debug($response);
+
             if ($response['errCode'] != 0 && $response['errMsg'] != "MEMBER_EXISTED") 
             {
                 return ['success' => 0, 'error_code' => $response['errMsg']];
@@ -90,44 +92,9 @@ class SCController extends Controller
                 return '';
             }
 
-            $operatorCode = env('SC_OPERATOR_CODE');
-            $providerCode = 'CC';
-            $gameType = 'APP';
-            $secretKey = env('SC_SECRET_KEY');
-            $apiUrl = env('SC_API_URL');
-            $password = env('SC_PASSWORD');
-            $method = '/launchGames.aspx';
+            $downloadURL = env('SC_DL_URL');
 
-            //hardcode 'type'
-            // $gameType = 'LC';
-            // $providerCode = 'G8';
-
-            //unnecessary
-            $gameId; 
-            $lang; 
-            $html5; 
-
-            $username = strtolower(Auth::user()->username);
-
-            $md5 = md5($operatorCode.$password.$providerCode.$gameType.$username.$secretKey);
-            $signature = strtoupper($md5);
-
-            $url = $apiUrl.$method.'?operatorcode='.$operatorCode.'&password='.$password.'&providercode='.$providerCode.'&username='.$username.'&type='.$gameType.'&signature='.$signature;
-
-            log::debug($url);
-            
-
-            $response = Helper::getData($url);
-            $response = json_decode($response,true);
-
-            log::debug($response);
-
-            if ($response['errCode'] != 0) 
-            {
-                return $response['errMsg'];
-            }
-
-            return $response['gameUrl'];
+            return $downloadURL;
         } 
         catch (Exception $e) 
         {

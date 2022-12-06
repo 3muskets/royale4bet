@@ -141,10 +141,10 @@ class NOEController extends Controller
 
             if ($response['success'] == 0) 
             {
-                return ['success' => 0, 'error_code' => $response['error_code'], 'launch_url' => '', 'login_id' => '', 'ft_password' => ''];
+                return ['status' => 0, 'error_code' => $response['error_code'], 'iframe' => '', 'login_id' => '', 'ft_password' => ''];
             }
 
-            return ['success' => 1, 'launch_url' => $userdlUrl, 'login_id' => $response['login_id'], 'ft_password' => $response['ft_password']];
+            return ['status' => 1, 'iframe' => $userdlUrl, 'login_id' => $response['login_id'], 'ft_password' => $response['ft_password']];
 
         } 
         catch (Exception $e) 
@@ -240,9 +240,9 @@ class NOEController extends Controller
 
                 DB::update("UPDATE noe_wallet_transfer
                             SET status = 'x'
-                                AND error_code = ?
+                                , error_code = ?
                             WHERE id = ?"
-                            ,[$orderId,$response['code']]);
+                            ,[$response['code'],$orderId]);
 
                 return ['success' => 0, 'error_code' => $response['code']];
             }
@@ -302,9 +302,9 @@ class NOEController extends Controller
             {
                 DB::update("UPDATE noe_wallet_transfer
                             SET status = 'x'
-                                AND error_code = ?
+                                , error_code = ?
                             WHERE id = ?"
-                            ,[$orderId,$response['code']]);
+                            ,[$response['code'],$orderId]);
 
                 return ['success' => 0, 'error_code' => $response['code']];
             }
@@ -391,6 +391,29 @@ class NOEController extends Controller
         }
     }
 
+    public static function depositAllAmount()
+    {
+        try 
+        {
+            $balanceBef = DB::select("SELECT available 
+                        FROM member_credit
+                        WHERE member_id = ?
+                        FOR UPDATE"
+                        ,[$memberId]);
+
+            $amount = $balanceBef[0]->available;
+
+            $response = self::setMemberScore($amount);
+
+            return $response;
+        } 
+        catch (Exception $e) 
+        {
+            log::debug($e);
+            return ['success' => 0, 'error_code' => 'NOE withdraw all: Internal Error'];
+        }
+    }
+
     public static function getGameLog()
     {
         try 
@@ -447,6 +470,11 @@ class NOEController extends Controller
                         $win = $value['Win'];
                         $bet = $value['bet'];
                         $uuid = $value['uuid'];
+
+                        if ($gameID == -1) 
+                        {
+                            continue;
+                        }
 
                         DB::insert("INSERT INTO noe_debit(txn_id, member_id, prd_id, category, class_id, begin_bal, end_bal, game_id, bet, created_time, created_at)
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())

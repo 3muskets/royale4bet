@@ -44,42 +44,48 @@ class SCRController extends Controller
             $apiPassword = env('SCR_API_PASSWORD');
             $apiUserId =  env('SCR_API_USER');
             $playerName = Auth::user()->username;
-            $playerPassword = 'a123123123';
+            $playerPassword = Helper::generateRandomString(10);
             $operation = 'addnewplayer';
+
+            $memberId = Auth::id();
+
+            $db = DB::select("SELECT login_id, ft_password
+                            FROM scr_users
+                            WHERE member_id = ?"
+                            ,[$memberId]);
+
+            if (sizeof($db) !== 0) 
+            {
+                return ['success' => 1, 'login_id' => $db[0]->login_id, 'ft_password' => $db[0]->ft_password];
+            }
 
             // $time = floor(microtime(true) * 1000);
             $data = ['apiuserid' => $apiUserId
                     ,'apipassword' => $apiPassword
                     ,'operation' => $operation
-                    ,'playername' => 'royale'.$playerName
+                    ,'playername' => 'royale_'.$playerName
                     ,'playertelno' => '0123456789'
                     ,'playerdescription' => ''
                     ,'playerpassword' => $playerPassword
                 ];
 
-            log::debug($url);
-            log::debug($data);
-
-
             $response = Helper::postData($url,$data);
-            log::debug($response);
-
             $response = json_decode($response,true);
 
-            return $response;
+            if ($response['returncode'] == 0) 
+            {
+                $playerId = $response['playerid'];
 
-            // if ($response['success'] == true) 
-            // {
-            //     DB::insert("INSERT INTO noe_users (member_id, login_id, ft_password)
-            //                 VALUES(?,?,?)"
-            //                 ,[$memberId, $username, $password]);
+                DB::insert("INSERT INTO scr_users (member_id, login_id, ft_password)
+                            VALUES(?,?,?)"
+                            ,[$memberId, $playerId, $playerPassword]);
 
-            //     return ['success' => 1, 'login_id' => $username, 'ft_password' => $password];
-            // }
-            // else
-            // {
-            //     return ['success' => 0, 'error_code' => $response['code']];
-            // }
+                return ['success' => 1, 'login_id' => $playerId, 'ft_password' => $playerPassword];
+            }
+            else
+            {
+                return ['success' => 0, 'error_code' => $response['message']];
+            }
         } 
         catch (Exception $e) 
         {
@@ -88,47 +94,61 @@ class SCRController extends Controller
         }
     }
 
-    public static function createAccount()
+    public static function getPlayerInfo()
     {
         try 
         {
-            $memberId = Auth::id();
-
-            // $db = DB::select("SELECT login_id, ft_password
-            //                 FROM noe_users
-            //                 WHERE member_id = ?"
-            //                 ,[$memberId]);
-
-            // if (sizeof($db) !== 0) 
-            // {
-            //     return ['success' => 1, 'login_id' => $db[0]->login_id, 'ft_password' => $db[0]->ft_password];
-            // }
-
             $url = env('SCR_API_URL').'/player';
-            $secretKey = env('918KISS_SECRET_KEY');
-            $username = env('918KISS_USERNAME');
+            $apiPassword = env('SCR_API_PASSWORD');
+            $apiUserId =  env('SCR_API_USER');
+            $memberId = Auth::id();
+            $operation = 'getplayerinfo';
 
-            $time = floor(microtime(true) * 1000);
+            $db = DB::select("SELECT login_id, ft_password
+                            FROM scr_users
+                            WHERE member_id = ?"
+                            ,[$memberId]);
 
-            $authCode = env('918KISS_AUTH');
-            // $authCode = 'kissapimyrb';
-            $sign = strtoupper(md5(strtolower($authCode.$username.$time.$secretKey)));
-            $action = '?action=RandomUserName';
-
-            $url = $url.$action.'&userAreaId=1&userName='.$username.'&time='.$time.'&authcode='.$authCode.'&sign='.$sign;
-
-            $response = Helper::getData($url);
-            $response = json_decode($response,true);
-
-            if ($response['success'] == true) 
+            if (sizeof($db) == 0) 
             {
-                $account = $response['account'];
+                $user = self::createUser();
 
-                return self::createUser($account);
+                if ($user['success'] == 1) 
+                {
+                    $playerId = $user['login_id'];
+                    $password = $user['ft_password'];
+                }
+                else
+                {
+                    return ['success' => 0, 'error_code' => $user['error_code']];
+                }
             }
             else
             {
-                return ['success' => 0, 'error_code' => $response['code']];
+                $playerId = $db[0]->login_id;
+                $password = $db[0]->ft_password;
+            }
+
+            // $time = floor(microtime(true) * 1000);
+            $data = ['apiuserid' => $apiUserId
+                    ,'apipassword' => $apiPassword
+                    ,'operation' => $operation
+                    ,'playerid' => $playerId
+                ];
+
+            $response = Helper::postData($url,$data);
+            $response = json_decode($response,true);
+
+            if ($response['returncode'] == 0) 
+            {
+                $id = $response['id'];
+                $balance = $response['balance'];
+
+                return ['success' => 1, 'login_id' => $playerId, 'ft_password' => $password, 'balance' => $balance];
+            }
+            else
+            {
+                return ['success' => 0, 'error_code' => $response['message']];
             }
         } 
         catch (Exception $e) 
@@ -145,14 +165,14 @@ class SCRController extends Controller
             //mobile
             $userdlUrl = env('SCR_GAMEDL_URL');
 
-            $response = self::createAccount();
+            $response = self::getPlayerInfo();
 
             if ($response['success'] == 0) 
             {
-                return ['success' => 0, 'error_code' => $response['error_code'], 'launch_url' => '', 'login_id' => '', 'ft_password' => ''];
+                return ['status' => 0, 'error_code' => $response['error_code'], 'iframe' => '', 'login_id' => '', 'ft_password' => ''];
             }
 
-            return ['success' => 1, 'launch_url' => $userdlUrl, 'login_id' => $response['login_id'], 'ft_password' => $response['ft_password']];
+            return ['status' => 1, 'iframe' => $userdlUrl, 'login_id' => $response['login_id'], 'ft_password' => $response['ft_password']];
 
         } 
         catch (Exception $e) 
@@ -163,14 +183,20 @@ class SCRController extends Controller
     }
 
     //add credit
-    public static function setMemberScore($amount)
+    public static function deposit()
     {
         try 
         {
+            //predeposit then deposit to member
+            $url = env('SCR_API_URL').'/funds';
+            $apiPassword = env('SCR_API_PASSWORD');
+            $apiUserId =  env('SCR_API_USER');
             $memberId = Auth::id();
+            $operation = 'predeposit'; //1st
+            $operation2 = 'deposit'; //2nd
 
             $db = DB::select("SELECT login_id
-                            FROM noe_users
+                            FROM scr_users
                             WHERE member_id = ?"
                             ,[$memberId]);
 
@@ -180,27 +206,171 @@ class SCRController extends Controller
 
                 if ($response['success'] == 0) 
                 {
-                    return ['success' => 0, 'error_code' => $response['error_code'], 'launch_url' => '', 'login_id' => '', 'ft_password' => ''];
+                    return ['success' => 0, 'error_code' => $response['error_code']];
                 }
 
-                $username = $response['login_id'];
-                $actionUser = $response['login_id'];
+                $loginId = $response['login_id'];
             }
             else
             {
-                $username = $db[0]->login_id;
-                $actionUser = $db[0]->login_id;
+                $loginId = $db[0]->login_id;
             }
 
-            $url = env('SCR_API_URL').'/ashx/account/setScore.ashx';
-            $action = '?action=setServerScore';
-            $scoreNumber = $amount;
-            $actionIp = $_SERVER['SERVER_ADDR'];
-            $time = floor(microtime(true) * 1000);
-            $authCode = env('918KISS_AUTH');
-            $secretKey = env('918KISS_SECRET_KEY');
-            $sign = strtoupper(md5(strtolower($authCode.$username.$time.$secretKey)));
-            $type = ($amount>0)?'d':'w';
+            //pre deposit
+            $predata = ['apiuserid' => $apiUserId
+                    ,'apipassword' => $apiPassword
+                    ,'operation' => $operation
+                ];
+
+            //deposit
+            $data = ['apiuserid' => $apiUserId
+                    ,'apipassword' => $apiPassword
+                    ,'operation' => $operation2
+                    ,'playerid' => $loginId
+                ];
+
+            //deposit
+            $type = 'd';
+
+            $balanceBef = DB::select("SELECT available 
+                        FROM member_credit
+                        WHERE member_id = ?
+                        FOR UPDATE"
+                        ,[$memberId]);
+
+            $amount = $balanceBef[0]->available;
+            $balanceBef = $balanceBef[0]->available;
+
+            if ($amount == 0) 
+            {
+                return ['success' => 0, 'error_code' => 'INSUFFICIENT_FUNDS'];
+            }
+
+            DB::insert("INSERT INTO scr_wallet_transfer(prd_id, member_id, transfer_to, type, amount, status, created_at)
+                            VALUES(?,?,?,?,?,?,NOW())"
+                            ,[Providers::SCR, Auth::id(), 'm', $type, $amount, 'p']);
+
+            $db = DB::select("SELECT DISTINCT last_insert_id() as id FROM noe_wallet_transfer");
+
+            $orderId = $db[0]->id;
+
+            $response = Helper::postData($url,$predata);
+            $response = json_decode($response,true);
+
+            if ($response['returncode'] == 0) 
+            {
+                $tid = $response['tid'];
+            }
+            else
+            {
+                DB::update("UPDATE member_credit 
+                        SET updated_at = NOW()
+                        WHERE member_id = ?"
+                        ,[$memberId]);
+
+                DB::update("UPDATE scr_wallet_transfer
+                            SET status = 'x'
+                                , error_code = ?
+                            WHERE id = ?"
+                            ,[$response['message'],$orderId]);
+
+                return ['success' => 0, 'error_code' => $response['message']];
+            }
+
+            $data['tid'] = $tid;
+            $data['amount'] = $amount;
+
+            $response = Helper::postData($url,$data);
+            $response = json_decode($response,true);
+
+            if ($response['returncode'] == 0) 
+            {
+                DB::update("UPDATE member_credit 
+                        SET updated_at = NOW()
+                        ,available = available - ?
+                        WHERE member_id = ?"
+                        ,[$amount,$memberId]);
+
+                DB::update("UPDATE scr_wallet_transfer
+                            SET status = 'a'
+                            WHERE id = ?"
+                            ,[$orderId]);
+
+                Helper::storeTxnCredit($orderId,Providers::SCR,$memberId,$balanceBef,$amount);
+            }
+            else
+            {
+                DB::update("UPDATE member_credit 
+                        SET updated_at = NOW()
+                        WHERE member_id = ?"
+                        ,[$memberId]);
+
+                DB::update("UPDATE scr_wallet_transfer
+                            SET status = 'x'
+                                , error_code = ?
+                            WHERE id = ?"
+                            ,[$response['message'],$orderId]);
+
+                return ['success' => 0, 'error_code' => $response['message']];
+            }
+
+            return ['success' => 1, 'error_code' => $response['message']];
+        } 
+        catch (Exception $e) 
+        {
+            log::debug($e);
+            return ['success' => 0, 'error_code' => __('error.dw.internal_error')];
+        }
+    }
+
+    public static function withdrawAll()
+    {
+        try 
+        {
+            //predeposit then deposit to member
+            $url = env('SCR_API_URL').'/funds';
+            $apiPassword = env('SCR_API_PASSWORD');
+            $apiUserId =  env('SCR_API_USER');
+            $memberId = Auth::id();
+            $operation = 'prewithdrawall'; //1st
+            $operation2 = 'withdrawall'; //2nd
+
+            $db = DB::select("SELECT login_id
+                            FROM scr_users
+                            WHERE member_id = ?"
+                            ,[$memberId]);
+
+            if(sizeof($db) == 0)
+            {
+                $response = self::createAccount();
+
+                if ($response['success'] == 0) 
+                {
+                    return ['success' => 0, 'error_code' => $response['error_code']];
+                }
+
+                $loginId = $response['login_id'];
+            }
+            else
+            {
+                $loginId = $db[0]->login_id;
+            }
+
+            //pre withdraw
+            $predata = ['apiuserid' => $apiUserId
+                    ,'apipassword' => $apiPassword
+                    ,'operation' => $operation
+                ];
+
+            //withdraw
+            $data = ['apiuserid' => $apiUserId
+                    ,'apipassword' => $apiPassword
+                    ,'operation' => $operation2
+                    ,'playerid' => $loginId
+                ];
+
+            //withdraw
+            $type = 'w';
 
             $balanceBef = DB::select("SELECT available 
                         FROM member_credit
@@ -210,33 +380,31 @@ class SCRController extends Controller
 
             $balanceBef = $balanceBef[0]->available;
 
-            DB::insert("INSERT INTO noe_wallet_transfer(prd_id, member_id, transfer_to, type, amount, status, created_at)
+            $playerInfo = self::getPlayerInfo();
+
+            if ($playerInfo['success'] == 1) 
+            {
+                $amount = $playerInfo['balance'];
+            }
+            else
+            {
+                return ['success' => 0, 'error_code' => 'PLAYER_INFO_FAILED'];
+            }
+
+            DB::insert("INSERT INTO scr_wallet_transfer(prd_id, member_id, transfer_to, type, amount, status, created_at)
                             VALUES(?,?,?,?,?,?,NOW())"
-                            ,[Providers::NOE, Auth::id(), 'm', $type, $amount, 'n']);
+                            ,[Providers::SCR, Auth::id(), 'm', $type, $amount, 'p']);
 
             $db = DB::select("SELECT DISTINCT last_insert_id() as id FROM noe_wallet_transfer");
 
             $orderId = $db[0]->id;
 
-            $url = $url.$action.'&scoreNum='.$scoreNumber.'&orderid='.$orderId.'&userName='.$username.'&ActionUser='.$actionUser.'&ActionIp='.$actionIp.'&time='.$time.'&authcode='.$authCode.'&sign='.$sign;
-
-            $response = Helper::getData($url);
+            $response = Helper::postData($url,$predata);
             $response = json_decode($response,true);
 
-            if ($response['success'] == 'true') 
+            if ($response['returncode'] == 0) 
             {
-                DB::update("UPDATE member_credit 
-                        SET updated_at = NOW()
-                        ,available = available - ?
-                        WHERE member_id = ?"
-                        ,[$amount,$memberId]);
-
-                DB::update("UPDATE noe_wallet_transfer
-                            SET status = 'a'
-                            WHERE id = ?"
-                            ,[$orderId]);
-
-                Helper::storeTxnCredit($orderId,Providers::NOE,$memberId,$balanceBef,$amount);
+                $tid = $response['tid'];
             }
             else
             {
@@ -245,343 +413,57 @@ class SCRController extends Controller
                         WHERE member_id = ?"
                         ,[$memberId]);
 
-                DB::update("UPDATE noe_wallet_transfer
+                DB::update("UPDATE scr_wallet_transfer
                             SET status = 'x'
-                                AND error_code = ?
+                                , error_code = ?
                             WHERE id = ?"
-                            ,[$orderId,$response['code']]);
+                            ,[$response['message'],$orderId]);
 
-                return ['success' => 0, 'error_code' => $response['code']];
+                return ['success' => 0, 'error_code' => $response['message']];
             }
 
-            return ['success' => 1, 'error_code' => $response['code'], 'balance' => $response['money']];
+            $data['tid'] = $tid;
+
+            $response = Helper::postData($url,$data);
+            $response = json_decode($response,true);
+
+            if ($response['returncode'] == 0) 
+            {
+                DB::update("UPDATE member_credit 
+                        SET updated_at = NOW()
+                        ,available = available + ?
+                        WHERE member_id = ?"
+                        ,[$amount,$memberId]);
+
+                DB::update("UPDATE scr_wallet_transfer
+                            SET status = 'a'
+                            WHERE id = ?"
+                            ,[$orderId]);
+
+                Helper::storeTxnCredit($orderId,Providers::SCR,$memberId,$balanceBef,$amount);
+            }
+            else
+            {
+                DB::update("UPDATE member_credit 
+                        SET updated_at = NOW()
+                        WHERE member_id = ?"
+                        ,[$memberId]);
+
+                DB::update("UPDATE scr_wallet_transfer
+                            SET status = 'x'
+                                , error_code = ?
+                            WHERE id = ?"
+                            ,[$response['message'],$orderId]);
+
+                return ['success' => 0, 'error_code' => $response['message']];
+            }
+
+            return ['success' => 1, 'error_code' => $response['message']];
         } 
         catch (Exception $e) 
         {
             log::debug($e);
             return ['success' => 0, 'error_code' => __('error.dw.internal_error')];
-        }
-    }
-
-    //add agent credit
-    public static function setAgentScore($amount)
-    {
-        try 
-        {
-            $url = env('SCR_API_URL').'/ashx/account/setScore.ashx';
-            $action = '?action=setAgentScore';
-            $scoreNumber = $amount;
-            $username = env('918KISS_AGENT');
-            $actionUser = env('918KISS_AGENT');
-            $actionIp = $_SERVER['SERVER_ADDR'];
-            $time = floor(microtime(true) * 1000);
-            $authCode = env('918KISS_AUTH');
-            $secretKey = env('918KISS_SECRET_KEY');
-            $sign = strtoupper(md5(strtolower($authCode.$username.$time.$secretKey)));
-            $type = ($amount>0)?0:1;
-
-            DB::insert("INSERT INTO noe_wallet_transfer(prd_id, member_id, transfer_to, type, amount, status, created_at)
-                            VALUES(?,?,?,?,?,?,NOW())"
-                            ,[Providers::NOE, Auth::id(), 'a', $type, $amount, 'n']);
-
-            $db = DB::select("SELECT DISTINCT last_insert_id() as id FROM noe_wallet_transfer");
-
-            $orderId = $db[0]->id;
-
-            $url = $url.$action.'&scoreNum='.$scoreNumber.'&orderid='.$orderId.'&userName='.$username.'&ActionUser='.$actionUser.'&ActionIp='.$actionIp.'&time='.$time.'&authcode='.$authCode.'&sign='.$sign;
-
-            log::debug($url);
-
-            $response = Helper::getData($url);
-            $response = json_decode($response,true);
-
-            log::debug($response);
-
-
-            if ($response['success'] == 'true') 
-            {
-                DB::update("UPDATE noe_wallet_transfer
-                            SET status = 'a'
-                            WHERE id = ?"
-                            ,[$orderId]);
-            }
-            else
-            {
-                DB::update("UPDATE noe_wallet_transfer
-                            SET status = 'x'
-                                AND error_code = ?
-                            WHERE id = ?"
-                            ,[$orderId,$response['code']]);
-
-                return ['success' => 0, 'error_code' => $response['code']];
-            }
-
-            log::debug($response);
-
-            return ['success' => 1, 'error_code' => $response['code'], 'balance' => $response['money']];
-        } 
-        catch (Exception $e) 
-        {
-            log::debug($e);
-        }
-    }
-
-
-    //get user information(undone)
-    public static function getUserInfo()
-    {
-        try 
-        {
-            $db = DB::select("SELECT login_id
-                            FROM noe_users
-                            WHERE member_id = ?"
-                            ,[Auth::id()]);
-
-            if(sizeof($db) == 0)
-            {
-                return ['status' => 0, 'error' => 'INVALID_LOGIN_ID'];
-            }
-
-            $url = env('SCR_API_URL').'/ashx/account/account.ashx';
-            $action = '?action=getSearchUserInfo';
-            $username = $db[0]->login_id;
-            $time = floor(microtime(true) * 1000);
-            $authCode = env('918KISS_AUTH');
-            $secretKey = env('918KISS_SECRET_KEY');
-            $sign = strtoupper(md5(strtolower($authCode.$username.$time.$secretKey)));
-
-            $url = $url.$action.'&userName='.$username.'&time='.$time.'&authcode='.$authCode.'&sign='.$sign;
-
-            $response = Helper::getData($url);
-            $response = json_decode($response,true);
-
-            if ($response['success'] == true) 
-            {
-                return ['success' => 1, 'balance' => (double)$response['results'][0]['MoneyNum']];
-            }
-            else
-            {
-                 return ['success' => 0];
-            }
-        } 
-        catch (Exception $e) 
-        {
-            log::debug($e);
-            return ['success' => 0];
-        }
-    }
-
-    public static function withdrawAllAmount()
-    {
-        try 
-        {
-            $getbalance = self::getUserInfo();
-            $responseArr = [];
-
-            if ($getbalance['success'] == 1) 
-            {
-                $response = self::setMemberScore(-$getbalance['balance']);
-            }
-            else
-            {
-                return ['success' => 0, 'error_code' => 'Get NOE balance failed'];
-            }
-
-            $responseArr[Providers::NOE] = $response;
-
-            return $responseArr;
-        } 
-        catch (Exception $e) 
-        {
-            log::debug($e);
-            return ['success' => 0, 'error_code' => 'NOE withdraw all: Internal Error'];
-        }
-    }
-
-    public static function getGameLog()
-    {
-        try 
-        {
-            $db = DB::select("SELECT login_id, member_id
-                            FROM noe_users");
-
-            foreach ($db as $users) 
-            {
-                $username = $users->login_id;
-                $memberId = $users->member_id;
-
-                $url = env('918KISS_API_URL_2').'/ashx/GameLog.ashx';
-                $time = floor(microtime(true) * 1000);
-                $authCode = env('918KISS_AUTH');
-                $secretKey = env('918KISS_SECRET_KEY');
-                $sign = strtoupper(md5(strtolower($authCode.$username.$time.$secretKey)));
-                $endDate = date('Y-m-d H:i:s', time() + 86400);
-                $startDate = date("Y-m-d", strtotime('+8 hours'))."%2000:00:00";
-                $endDate = date("Y-m-d", strtotime('+8 hours'))."%2023:59:59";
-                $pageSize = 1000;
-
-                $pageIndex = 1;
-
-                for ($pageIndex=1; $pageIndex < 10000; $pageIndex++) 
-                { 
-                    if ($pageIndex!=1) 
-                    {
-                        sleep(1);
-                    }
-                    $url = env('918KISS_API_URL_2').'/ashx/GameLog.ashx'.'?userName='.$username.'&sDate='.$startDate.'&eDate='.$endDate.'&time='.$time.'&authcode='.$authCode.'&sign='.$sign.'&pageSize='.$pageSize.'&pageIndex='.$pageIndex;
-
-                    $response = Helper::getData($url);
-                    $response = json_decode($response,true);
-
-                    if ($response['code'] != 0) 
-                    {
-                        log::debug('Insert 918 Kiss Game Log Error: '.$response['code'].' '.$response['msg']);
-                        return;
-                    }
-
-                    if (sizeof($response['results']) == 0) 
-                    {
-                        break;
-                    }
-
-                    foreach ($response['results'] as $value) 
-                    {
-                        $beginBalance = $value['BeginBlance'];
-                        $classId = $value['ClassID'];
-                        $createTime = $value['CreateTime'];
-                        $endBlance = $value['EndBlance'];
-                        $gameID = $value['GameID'];
-                        $win = $value['Win'];
-                        $bet = $value['bet'];
-                        $uuid = $value['uuid'];
-
-                        DB::insert("INSERT INTO noe_debit(txn_id, member_id, prd_id, category, class_id, begin_bal, end_bal, game_id, bet, created_time, created_at)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
-                                ON DUPLICATE KEY UPDATE
-                                     begin_bal = VALUES(begin_bal)
-                                        ,end_bal = VALUES(end_bal)
-                                        ,member_id = VALUES(member_id)
-                                        ,bet = VALUES(bet)
-                                        ,created_time = VALUES(created_time)
-                                        ,updated_at = NOW()
-                                        "
-                                ,
-                                [
-                                    $uuid,
-                                    $memberId,
-                                    Providers::NOE,
-                                    3,
-                                    $classId,
-                                    $beginBalance,
-                                    $endBlance,
-                                    $gameID,
-                                    $bet,
-                                    $createTime,
-                                ]);
-
-                        //calculate PT and COMM
-                        $db = DB::select('
-                            SELECT b.tier1_pt,b.tier2_pt,b.tier3_pt,b.tier4_pt,c.comm
-                            FROM member a
-                            INNER JOIN pt_eff b ON a.admin_id = b.admin_id
-                            INNER JOIN admin_comm c ON a.admin_id = c.admin_id
-                            WHERE a.id = ?
-                                AND b.prd_id = ?'
-                            ,[$memberId,Providers::NOE]);
-
-                        $tier1PT = $db[0]->tier1_pt;
-                        $tier2PT = $db[0]->tier2_pt;
-                        $tier3PT = $db[0]->tier3_pt;
-                        $tier4PT = $db[0]->tier4_pt;
-                        $tier4Comm = $db[0]->comm;
-                        $debitAmt = $bet;
-                        $amount = $win;
-
-                        $wlAmt = $debitAmt - $amount;
-
-                        $tier4PTAmt = $wlAmt * ($tier4PT / 100);
-                        Helper::removePrecision($tier4PTAmt);
-
-                        $tier3PTAmt = $wlAmt * ($tier3PT / 100);
-                        Helper::removePrecision($tier3PTAmt);
-
-                        $tier2PTAmt = $wlAmt * ($tier2PT / 100);
-                        Helper::removePrecision($tier2PTAmt);
-
-                        $tier1PTAmt = $wlAmt - $tier4PTAmt - $tier3PTAmt - $tier2PTAmt;
-
-                        $tier4CommAmt = $wlAmt * ($tier4Comm / 100);
-
-                        $type = 'c';
-
-                        //insert transaction
-                        $db = DB::insert('
-                                INSERT INTO noe_credit
-                                (prd_id,txn_id,type,amount
-                                ,tier1_pt,tier2_pt,tier3_pt,tier4_pt
-                                ,tier1_pt_amt,tier2_pt_amt,tier3_pt_amt,tier4_pt_amt
-                                ,tier4_comm,tier4_comm_amt
-                                ,created_at)
-                                VALUES
-                                (?,?,?,?
-                                ,?,?,?,?
-                                ,?,?,?,?
-                                ,?,?
-                                ,NOW())
-                                ON DUPLICATE KEY UPDATE
-                                type = VALUES(type)'
-                                ,[  Providers::NOE,$uuid,$type,$win
-                                    ,$tier1PT,$tier2PT,$tier3PT,$tier4PT
-                                    ,$tier1PTAmt,$tier2PTAmt,$tier3PTAmt,$tier4PTAmt
-                                    ,$tier4Comm,$tier4CommAmt]);
-                    }
-                }
-            }
-
-            return 'Success';
-        } 
-        catch (Exception $e) 
-        {
-            log::debug($e);
-        }
-    }
-
-    public static function getAccountReport($memberId)
-    {
-        try 
-        {
-            $db = DB::select("SELECT login_id
-                            FROM noe_users
-                            WHERE member_id = ?"
-                            ,[$memberId]);
-
-            if(sizeof($db) == 0)
-            {
-                return ['status' => 0, 'error' => 'INVALID_LOGIN_ID'];
-            }
-
-            $url = env('SCR_API_URL').'/ashx/AccountReport.ashx';
-            $username = $db[0]->login_id;
-            $time = floor(microtime(true) * 1000);
-            $authCode = env('918KISS_AUTH');
-            $secretKey = env('918KISS_SECRET_KEY');
-            $sign = strtoupper(md5(strtolower($authCode.$username.$time.$secretKey)));
-            $endDate = date('Y-m-d H:i:s', time() + 86400);
-            $startDate = "2022-07-13 00:00:00";
-            $endDate = "2022-07-13 23:59:59";
-
-            $url = $url.'?userName='.$username.'&sDate='.$startDate.'&eDate='.$endDate.'&time='.$time.'&authcode='.$authCode.'&sign='.$sign;
-
-            log::debug($url);
-
-            $response = Helper::getData($url);
-            $response = json_decode($response,true);
-
-            return $response;
-        } 
-        catch (Exception $e) 
-        {
-            log::debug($e);
         }
     }
 }

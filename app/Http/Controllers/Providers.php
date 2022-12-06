@@ -53,9 +53,9 @@ class Providers
     const Ps9PS = 121;//not support MYR
 
     //external apps
-    const MEGA = 200;
-    const NOE = 201;
-    const PUSSY = 202;
+    // const MEGA = 200;
+    // const NOE = 201;
+    // const PUSSY = 202;
 
     //new
     const SBO = 1000;
@@ -66,6 +66,50 @@ class Providers
     const PT = 1005;
     const Joker = 1006;
     const XE88 = 1007;
+    const SexyGaming = 1012;
+
+    //external apps
+    const MEGA = 1008;
+    const NOE = 1009;
+    const SCR = 1010;
+    const PUSSY = 1011;
+    const KAYA = 1013;
+
+    const LIVEevoC = 2000;//Evolution Gaming live casino (2)
+    const LIVEabC = 2001;//All Bet live casino (2)
+    const LIVEbgC = 2002;//Big Gaming live casino (2)
+    const LIVEsaC = 2003;//SA Gaming live casino (2)
+    const LIVEppS = 2004;//Pragmatic Play slot (1)
+    const LIVEpgsS = 2005;//PG Soft live slot (1)
+    const LIVEcq9S = 2006;//CQ9 slot (1)
+    const LIVEcq9F = 2007;//CQ9 fishing (8)
+    const LIVEptS = 2008;//Play Tech slot (1)
+    const LIVEptC = 2009;//Play Tech live casino (2)
+    const LIVEjokerS = 2010;//Joker slot (1)
+    const LIVEdsS = 2011;//Dragon Soft slot (1)
+    const LIVEtfS = 2012;//TF Gaming slot (1)
+    const LIVEtfE = 2013;//TF Gaming esport (13)
+    const LIVEwmC = 2014;//WM Casino live casino (2)
+    const LIVEsgC = 2015;//Sexy Gaming live casino (2)
+    const LIVEkingC = 2016;//King 855 live casino (2)
+    const LIVEamayaS = 2017;//AMAYA slot (1)
+    const LIVEhabaS = 2018;//Habanero slot (1)
+    const LIVEibcSB = 2019;//IBC sport book (3)
+    const LIVEreevoS = 2020;//Reevo     slot (1)
+    const LIVEevopS = 2021;//EvoPlay   slot (1)
+    const LIVEpsS = 2022;//PlayStar  slot (1)
+    const LIVEdgC = 2023;//Dream Gaming  live casino (2)
+    const LIVEnexusL = 2024;//Nexus 4D  lottery (5)
+    const LIVEhkgpL = 2025;//HKGP Lottery  lottery (5)
+    const LIVEslotxoS = 2026;//SlotXo    slot (1)
+    const LIVEambP = 2027;//AMB Poker     p2p (7)
+    const LIVEskyS = 2028;//SkyWind   slot (1)
+    const LIVEskyC = 2029;//SkyWind   live casino (2)
+    const LIVEbtiSB = 2030;//BTI   sport book (3)
+    const LIVEapS = 2031;//Advant Play   slot (1)
+    const LIVEjdbS = 2032;//JDB   slot (1)
+    const LIVEjiliS = 2033;//Jili  slot (1)
+    const LIVEjiliF = 2034;//Jili  fishing (8)
 
     // public static function getProductLogTable($prdId)
     // {   

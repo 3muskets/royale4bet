@@ -36,13 +36,13 @@ class PUSSYController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public static function createUser()
+    public static function createUser($account)
     {
         try
         {
             $url = env('PUSSY_API_URL_1').'/ashx/account/account.ashx';
             $secretKey = env('PUSSY_SECRET_KEY');
-            $username = Auth::user()->username;
+            $username = (string)$account;
             $name = Auth::user()->username;
             $memberId = Auth::id();
 
@@ -55,14 +55,10 @@ class PUSSYController extends Controller
             $password = Helper::generateRandomString(8);
             $userType = 1; //1 正式玩家 100 代理级别
 
-            $url = $url.$action.'&agent='.$agent.'&PassWd='.$password.'&pwdtype=1&UserAreaId=1&Name='.$name.'&userName='.$username.'&UserType='.$userType.'&time='.$time.'&authcode='.$authCode.'&sign='.$sign;
-
-            log::debug($url);
+            $url = $url.$action.'&agent='.$agent.'&PassWd='.$password.'&pwdtype=1&UserAreaId=1&Name='.$name.'&userName='.$username.'&Tel=0123456789&UserType='.$userType.'&time='.$time.'&authcode='.$authCode.'&sign='.$sign;
 
             $response = Helper::getData($url);
-            $response = json_decode($response,true);
-            log::debug($response);
-            
+            $response = json_decode($response,true);  
 
             if ($response['success'] == 'true') 
             {
@@ -84,55 +80,55 @@ class PUSSYController extends Controller
         }
     }
 
-    // public static function createAccount()
-    // {
-    //     try 
-    //     {
-    //         $memberId = Auth::id();
+    public static function createAccount()
+    {
+        try 
+        {
+            $memberId = Auth::id();
 
-    //         $db = DB::select("SELECT login_id, ft_password
-    //                         FROM pussy_users
-    //                         WHERE member_id = ?"
-    //                         ,[$memberId]);
+            $db = DB::select("SELECT login_id, ft_password
+                            FROM pussy_users
+                            WHERE member_id = ?"
+                            ,[$memberId]);
 
-    //         if (sizeof($db) !== 0) 
-    //         {
-    //             return ['success' => 1, 'login_id' => $db[0]->login_id, 'ft_password' => $db[0]->ft_password];
-    //         }
+            if (sizeof($db) !== 0) 
+            {
+                return ['success' => 1, 'login_id' => $db[0]->login_id, 'ft_password' => $db[0]->ft_password];
+            }
 
-    //         $url = env('PUSSY_API_URL_1').'/ashx/account/account.ashx';
-    //         $secretKey = env('PUSSY_SECRET_KEY');
-    //         $username = env('PUSSY_USERNAME');
+            $url = env('PUSSY_API_URL_1').'/ashx/account/account.ashx';
+            $secretKey = env('PUSSY_SECRET_KEY');
+            $username = env('PUSSY_USERNAME');
 
-    //         $time = floor(microtime(true) * 1000);
+            $time = floor(microtime(true) * 1000);
 
-    //         $authCode = env('PUSSY_AUTH');
-    //         // $authCode = 'kissapimyrb';
-    //         $sign = strtoupper(md5(strtolower($authCode.$username.$time.$secretKey)));
-    //         $action = '?action=RandomUserName';
+            $authCode = env('PUSSY_AUTH');
+            // $authCode = 'kissapimyrb';
+            $sign = strtoupper(md5(strtolower($authCode.$username.$time.$secretKey)));
+            $action = '?action=RandomUserName';
 
-    //         $url = $url.$action.'&userName='.$username.'&time='.$time.'&authcode='.$authCode.'&sign='.$sign;
+            $url = $url.$action.'&userName='.$username.'&time='.$time.'&authcode='.$authCode.'&sign='.$sign;
 
-    //         $response = Helper::getData($url);
-    //         $response = json_decode($response,true);
+            $response = Helper::getData($url);
+            $response = json_decode($response,true);
 
-    //         if ($response['success'] == true) 
-    //         {
-    //             $account = $response['account'];
+            if ($response['success'] == true) 
+            {
+                $account = $response['account'];
 
-    //             return self::createUser($account);
-    //         }
-    //         else
-    //         {
-    //             return ['success' => 0, 'error_code' => $response['code']];
-    //         }
-    //     } 
-    //     catch (Exception $e) 
-    //     {
-    //         log::debug($e);
-    //         return ['success' => 0, 'error_code' => 'INTERNAL_ERROR'];
-    //     }
-    // }
+                return self::createUser($account);
+            }
+            else
+            {
+                return ['success' => 0, 'error_code' => $response['code']];
+            }
+        } 
+        catch (Exception $e) 
+        {
+            log::debug($e);
+            return ['success' => 0, 'error_code' => 'INTERNAL_ERROR'];
+        }
+    }
 
     public static function launchGames()
     {
@@ -141,14 +137,14 @@ class PUSSYController extends Controller
             //mobile
             $userdlUrl = env('PUSSY_GAMEDL_URL');
 
-            $response = self::createUser();
+            $response = self::createAccount();
 
             if ($response['success'] == 0) 
             {
-                return ['success' => 0, 'error_code' => $response['error_code'], 'launch_url' => '', 'login_id' => '', 'ft_password' => ''];
+                return ['status' => 0, 'error_code' => $response['error_code'], 'iframe' => '', 'login_id' => '', 'ft_password' => ''];
             }
 
-            return ['success' => 1, 'launch_url' => $userdlUrl, 'login_id' => $response['login_id'], 'ft_password' => $response['ft_password']];
+            return ['status' => 1, 'iframe' => $userdlUrl, 'login_id' => $response['login_id'], 'ft_password' => $response['ft_password']];
 
         } 
         catch (Exception $e) 
@@ -159,7 +155,7 @@ class PUSSYController extends Controller
     }
 
     //add credit
-    public static function setMemberScore($amount)
+    public static function setMemberScore($type='d')
     {
         try 
         {
@@ -188,15 +184,15 @@ class PUSSYController extends Controller
                 $actionUser = $db[0]->login_id;
             }
 
+            $actionUser = env('PUSSY_AGENT');
             $url = env('PUSSY_API_URL_1').'/ashx/account/setScore.ashx';
             $action = '?action=setServerScore';
-            $scoreNumber = $amount;
             $actionIp = $_SERVER['SERVER_ADDR'];
             $time = floor(microtime(true) * 1000);
             $authCode = env('PUSSY_AUTH');
             $secretKey = env('PUSSY_SECRET_KEY');
             $sign = strtoupper(md5(strtolower($authCode.$username.$time.$secretKey)));
-            $type = ($amount>0)?'d':'w';
+            // $type = ($amount>0)?'d':'w';
 
             $balanceBef = DB::select("SELECT available 
                         FROM member_credit
@@ -204,7 +200,14 @@ class PUSSYController extends Controller
                         FOR UPDATE"
                         ,[$memberId]);
 
-            $balanceBef = $balanceBef[0]->available;
+            $amount = $balanceBef[0]->available;
+
+            if ($type == 'w') 
+            {
+                $amount = '-'.$amount;
+            }
+
+            $scoreNumber = $amount;
 
             DB::insert("INSERT INTO pussy_wallet_transfer(prd_id, member_id, transfer_to, type, amount, status, created_at)
                             VALUES(?,?,?,?,?,?,NOW())"
@@ -289,6 +292,8 @@ class PUSSYController extends Controller
 
             $response = Helper::getData($url);
             $response = json_decode($response,true);
+
+            return $response;
 
             if ($response['success'] == true) 
             {
@@ -451,7 +456,12 @@ class PUSSYController extends Controller
                         $bet = $value['bet'];
                         $uuid = $value['uuid'];
 
-                        DB::insert("INSERT INTO pussy_debit(txn_id, member_id, prd_id, category, class_id, begin_bal, end_bal, game_id, bet, created_time, created_at)
+                        if ($gameID == -1) 
+                        {
+                            continue;
+                        }
+
+                        DB::insert("INSERT INTO noe_debit(txn_id, member_id, prd_id, category, class_id, begin_bal, end_bal, game_id, bet, created_time, created_at)
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
                                 ON DUPLICATE KEY UPDATE
                                      begin_bal = VALUES(begin_bal)
@@ -465,7 +475,7 @@ class PUSSYController extends Controller
                                 [
                                     $uuid,
                                     $memberId,
-                                    Providers::PUSSY,
+                                    Providers::NOE,
                                     3,
                                     $classId,
                                     $beginBalance,
@@ -475,59 +485,24 @@ class PUSSYController extends Controller
                                     $createTime,
                                 ]);
 
-                        //calculate PT and COMM
-                        $db = DB::select('
-                            SELECT b.tier1_pt,b.tier2_pt,b.tier3_pt,b.tier4_pt,c.comm
-                            FROM member a
-                            INNER JOIN pt_eff b ON a.admin_id = b.admin_id
-                            INNER JOIN admin_comm c ON a.admin_id = c.admin_id
-                            WHERE a.id = ?
-                                AND b.prd_id = ?'
-                            ,[$memberId,Providers::PUSSY]);
-
-                        $tier1PT = $db[0]->tier1_pt;
-                        $tier2PT = $db[0]->tier2_pt;
-                        $tier3PT = $db[0]->tier3_pt;
-                        $tier4PT = $db[0]->tier4_pt;
-                        $tier4Comm = $db[0]->comm;
                         $debitAmt = $bet;
                         $amount = $win;
 
                         $wlAmt = $debitAmt - $amount;
 
-                        $tier4PTAmt = $wlAmt * ($tier4PT / 100);
-                        Helper::removePrecision($tier4PTAmt);
-
-                        $tier3PTAmt = $wlAmt * ($tier3PT / 100);
-                        Helper::removePrecision($tier3PTAmt);
-
-                        $tier2PTAmt = $wlAmt * ($tier2PT / 100);
-                        Helper::removePrecision($tier2PTAmt);
-
-                        $tier1PTAmt = $wlAmt - $tier4PTAmt - $tier3PTAmt - $tier2PTAmt;
-
-                        $tier4CommAmt = $wlAmt * ($tier4Comm / 100);
-
                         $type = 'c';
 
                         //insert transaction
                         $db = DB::insert('
-                                INSERT INTO pussy_credit
+                                INSERT INTO noe_credit
                                 (prd_id,txn_id,type,amount
-                                ,tier1_pt,tier2_pt,tier3_pt,tier4_pt
-                                ,tier1_pt_amt,tier2_pt_amt,tier3_pt_amt,tier4_pt_amt
-                                ,tier4_comm,tier4_comm_amt
                                 ,created_at)
                                 VALUES
                                 (?,?,?,?
-                                ,?,?,?,?
-                                ,?,?,?,?
-                                ,?,?
-                                ,NOW())'
-                                ,[  Providers::PUSSY,$uuid,$type,$win
-                                    ,$tier1PT,$tier2PT,$tier3PT,$tier4PT
-                                    ,$tier1PTAmt,$tier2PTAmt,$tier3PTAmt,$tier4PTAmt
-                                    ,$tier4Comm,$tier4CommAmt]);
+                                ,NOW())
+                                ON DUPLICATE KEY UPDATE
+                                type = VALUES(type)'
+                                ,[  Providers::NOE,$uuid,$type,$win]);
                     }
                 }
             }
