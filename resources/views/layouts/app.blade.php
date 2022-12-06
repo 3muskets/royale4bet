@@ -1166,7 +1166,7 @@
                                             <br>
                                             <a class="footer-link" href="/tnc/about_us.pdf" target="_blank">About us</a>
                                             <br>
-                                            <a class="footer-link" href="/tnc/responsible_gaming.pdf" target="_blank">Responsible Gaming</a>
+                                            <a class="footer-link" href="/tnc/responsible_gaming" target="_blank">Responsible Gaming</a>
                                             <br>
 
                                         </div>
