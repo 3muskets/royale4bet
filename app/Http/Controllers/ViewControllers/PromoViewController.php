@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ViewControllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Helper;
+use App\Http\Controllers\PromoController;
 use Auth;
 use DB;
 use Log;
@@ -28,6 +29,8 @@ class PromoViewController extends Controller
      */
     public function index()
     {
-        return view('promo');
+        $data = PromoController::getPromo();
+
+        return view('promo')->with(['promo' => $data]);
     }
 }

@@ -1372,7 +1372,7 @@
                         </a>
                     </div>
 
-                    <div class="col-6 col-md-3 p-1">
+<!--                     <div class="col-6 col-md-3 p-1">
                         <a href="/transfer">
                             <button type="button" class="btn btn-primary w-100">
                                 <div class="d-flex justify-content-center">
@@ -1381,10 +1381,7 @@
                                 <div class="d-flex justify-content-center">Wallet</div>
                             </button>
                         </a>
-                    </div>
-                    
-                </div>
-                <div class="row">
+                    </div> -->
 
                     <div class="col-6 col-md-3 p-1">
                         <a href="/history">
@@ -1396,6 +1393,11 @@
                             </button>
                         </a>
                     </div>
+                    
+                </div>
+                <div class="row">
+
+                    
 
                     <!-- <div class="col-6 col-md-3 p-1">
                         <a href="/my_profile/deposit/new?status">
