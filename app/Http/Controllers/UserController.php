@@ -155,11 +155,16 @@ class UserController extends Controller
 
               //temporary limit 1 
             $db = DB::select('
-                SELECT id,bank,acc_no,name
+                SELECT id,bank,acc_no,name,min_deposit_amt, max_deposit_amt
                 FROM admin_bank_info 
                 WHERE status = "a"
-                LIMIT 1'
+                '
                 );
+
+            foreach($db as $d)
+            {
+                $d->bank_img = Helper::getOptionsValue(self::getBankArray(), $d->id);
+            }
 
             return $db;
         }
@@ -294,6 +299,22 @@ class UserController extends Controller
 
             return [];
         }
+    }
+
+    public static function getBankArray()
+    {
+        return  [
+            ['1', 'cimb']
+            ,['2', 'pbb']
+            ,['3', 'maybank']
+            ,['4', 'rhb']
+            ,['5', 'hlb']
+            ,['6', 'ambank']
+            ,['7', 'affin']
+            ,['8', 'alliance']
+            ,['9', 'ocbc']
+
+        ];
     }
 
 }
