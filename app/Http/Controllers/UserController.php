@@ -98,7 +98,7 @@ class UserController extends Controller
             $userId =  Auth::id();
 
             $db = DB::select('
-                SELECT username, first_name, last_name, birthdate, mobile, email
+                SELECT username, fullname, birthdate, mobile, email
                 FROM member
                 WHERE id = ?
                 LIMIT 1'
@@ -106,14 +106,9 @@ class UserController extends Controller
 
             foreach($db as $d)
             {
-                if ($d->first_name == null)
+                if ($d->fullname == null)
                 {
-                    $d->first_name = '-';
-                }
-
-                if ($d->last_name == null)
-                {
-                    $d->last_name = '';
+                    $d->fullname = '-';
                 }
             }
 

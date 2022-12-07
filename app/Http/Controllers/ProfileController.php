@@ -261,6 +261,50 @@ class ProfileController extends Controller
             return json_encode($response);
         }
     }
+
+    public static function editName(Request $request)
+    {
+        try
+        {
+            $user = Auth::user();
+            $id = $user->id;
+
+            $fullname = $request->input('fullname');
+
+            $errMsg = [];
+
+            if(!Helper::checkInputFormat('alphabetWithSpace',$fullname))
+            {
+                array_push($errMsg,  __('error.profile.namewithalphabet'));
+            }
+
+            if($errMsg)
+            {
+                $response = ['status' => 0
+                            ,'error' => $errMsg
+                            ];
+
+                return json_encode($response);
+            }
+
+            DB::update("UPDATE member SET fullname = ? WHERE id=?", [$fullname, $id]);
+
+            $response = ['status' => 1];
+
+            return json_encode($response);
+        }
+        catch(\Exception $e)
+        {
+            $response = [
+                            'status' => 0
+                            ,'error' => __('error.profile.internal_error')
+                        ];
+
+            log::debug($e);
+
+            return json_encode($response);
+        }
+    }
 }
 
 

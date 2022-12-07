@@ -61,4 +61,8 @@ return [
     'bank_info.emptybankname' => 'Please fill in bank name',
     'bank_info.invalid_address_length' => 'Bank branch address exceeds maximum length(50)',
     'bank_info.internal_error' => 'Internal Error',
+
+    //profile
+    'profile.namewithalphabet' => 'Error: Name can only contains characters',
+    'profile.internal_error' => 'Error: Please contact admin',
 ];

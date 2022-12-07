@@ -31,8 +31,7 @@ class ProfileViewController extends Controller
 
         return view('my_account')->with([
                                             'username' =>$details[0]->username
-                                            ,'first_name'=>$details[0]->first_name
-                                            ,'last_name'=>$details[0]->last_name
+                                            ,'fullname'=>$details[0]->fullname
                                             ,'mobile'=>$details[0]->mobile
                                             ,'email'=>$details[0]->email
                                             ,'birthdate'=>$details[0]->birthdate

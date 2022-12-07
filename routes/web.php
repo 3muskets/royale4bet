@@ -68,6 +68,7 @@ Route::get('/account', 'ViewControllers\ProfileViewController@index')->name('acc
 Route::post('ajax/profile/edit_profile', 'ProfileController@editProfile');
 Route::post('ajax/profile/change_pw', 'ProfileController@changePassword');
 Route::post('/ajax/profile/bank_info', 'ProfileController@editBankInfo');
+Route::post('/ajax/profile/name', 'ProfileController@editName');
 Route::get('/ajax/profile/user-details', 'ProfileController@getDetails');
 
 /*

@@ -6,6 +6,11 @@
 	{
 		prepareLocale();
 
+		$('.edit-profile').click(function()
+		{
+			$('#modal-profile').modal('show');
+		});
+
 		$('.edit-bank').click(function()
 		{
 			$('#modal-bank').modal('show');
@@ -14,6 +19,11 @@
 		$("#mainForm").on('submit',(function(e){
 		    e.preventDefault();
 		    submitMainForm();
+		}));
+
+		$("#mainForm2").on('submit',(function(e){
+		    e.preventDefault();
+		    submitMainForm2();
 		}));
 	});
 
@@ -74,6 +84,57 @@
             }
         });
 	}
+
+	function submitMainForm2()
+	{
+		if($("#mainForm2").attr("enabled") == 0)
+        {
+            return;
+        }
+
+        $("#mainForm").attr("enabled",0);
+
+        $.ajax({
+            url: "/ajax/profile/name",
+            type: "POST",
+            data:  new FormData($("#mainForm2")[0]),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(data)
+            {
+            	data = JSON.parse(data);
+            	
+            	if(data.status == 1)
+            	{
+            		alert(locale['success']);
+            		window.location.reload();
+            	}
+            	else
+                {
+                    var obj = JSON.parse(data);
+                    
+                    var html = "";
+
+                    if(Array.isArray(obj.error))
+                    {
+                        for(var i = 0; i < obj.error.length; i++)
+                        {
+                            html += "-" + obj.error[i] + "\n";
+                        }
+                    }
+                    else
+                    {
+                        html = obj.error;
+                    }
+
+                    $("#mainForm2").attr("enabled",1);
+
+                    alert(html);
+                }
+            }
+        });
+	}
 </script>
 <style>
 	.page-title
@@ -107,17 +168,6 @@
     	width: 100%;
     	padding: 0 5px;
     	border-radius: 3px;
-    }
-    select,input
-    {
-        width: 100%;
-        background: black !important;
-        border-radius: 10px !important;
-        box-shadow: none !important;
-        outline: none !important;
-        color: white !important;
-        padding: 5px 10px !important;
-
     }
 
     select,input::placeholder
@@ -177,7 +227,7 @@
 
 							  	<div class="form-group mb-2">
 							    	<label for=""><i class="fa fa-id-card-o"></i> Full Name</label>
-							    	<div class="cred" id="profile-fullname">{{ $first_name }} {{ $last_name }}</div>
+							    	<div class="cred" id="profile-fullname">{{ $fullname }}</div>
 							  	</div>
 
 							  	<div class="form-group mb-2">
@@ -186,7 +236,7 @@
 							  	</div>
 
 						  	  	<div class="form-group mb-0" style="text-align: right;">
-						  		   	<button type="submit" class="btn btn-edit">Edit</button>
+						  		   	<button type="button" class="btn btn-edit edit-profile">Edit</button>
 						  	  	</div>
 							</form>
 						</div>
@@ -239,6 +289,40 @@
 					</div>
 
 				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" role="dialog" id="modal-profile">
+	<div class="modal-dialog">
+		<div class="modal-content" style="background: white;">
+			<div class="modal-body ditto-card-body">
+				<p style="color: #000"><i class="fa fa-info" style="background: #6008c7; padding: 7px; clip-path: circle();"></i> Profile Details</p>
+				<form id="mainForm2" method="POST">
+					@csrf
+					<div class="form-group">
+					    <label for="fullname">Full Name</label>
+					    @if($fullname)
+					    <input type="text" class="form-control form-control-sm" name="fullname" value="{{$fullname}}" disabled>
+					    @else
+					    <input type="text" class="form-control form-control-sm" name="fullname" value="{{$fullname}}">
+					    @endif
+					    <div class="mt-4">
+					    	<span style="font-style:italic; font-size: 12px; color: grey">* Please note that your full name must match your bank account's name to avoid any transaction issues.</span>
+					    </div>
+				  	</div>
+
+				  	@if($fullname)
+				  	<div class="form-group" style="text-align: right">
+					   	<button type="submit" class="btn btn-edit" disabled>Submit</button>
+				  	</div>
+				  	@else
+				  	<div class="form-group" style="text-align: right">
+					   	<button type="submit" class="btn btn-edit">Submit</button>
+				  	</div>
+				  	@endif
+				</form>
 			</div>
 		</div>
 	</div>
