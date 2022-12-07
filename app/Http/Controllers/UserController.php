@@ -150,7 +150,7 @@ class UserController extends Controller
 
               //temporary limit 1 
             $db = DB::select('
-                SELECT id,bank,acc_no,name,min_deposit_amt, max_deposit_amt
+                SELECT bank_id,bank,acc_no,name,min_deposit_amt, max_deposit_amt
                 FROM admin_bank_info 
                 WHERE status = "a"
                 '
@@ -158,8 +158,10 @@ class UserController extends Controller
 
             foreach($db as $d)
             {
-                $d->bank_img = Helper::getOptionsValue(self::getBankArray(), $d->id);
+                $d->bank_img = Helper::getOptionsValue(self::getBankArray(), $d->bank_id);
             }
+
+            log::debug($db);
 
             return $db;
         }
