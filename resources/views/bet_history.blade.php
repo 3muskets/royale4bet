@@ -23,7 +23,6 @@
             });
         })();
 
-		utils.createSpinner("main-spinner");
 
 		getMainData();
 
@@ -121,11 +120,12 @@
         locale['mainData.type.d'] = "{!! __('app.bethistory.maindata.type.deposit') !!}";
         locale['mainData.type.w'] = "{!! __('app.bethistory.maindata.type.withdraw') !!}";
 
-        locale['mainData.status.p'] = "{!! __('app.bethistory.maindata.status.pending') !!}";
+        locale['mainData.status.n'] = "{!! __('app.bethistory.maindata.status.pending') !!}";
         locale['mainData.status.a'] = "{!! __('app.bethistory.maindata.status.approved') !!}";
         locale['mainData.status.r'] = "{!! __('app.bethistory.maindata.status.rejected') !!}";
+        locale['mainData.status.p'] = "{!! __('app.bethistory.maindata.status.rejected') !!}";
 
-        locale['mainData.payment_type.d'] = "{!! __('app.bethistory.maindata.payment_type.bank_transfer') !!}";
+        locale['mainData.payment_type.b'] = "{!! __('app.bethistory.maindata.payment_type.bank_transfer') !!}";
         locale['mainData.payment_type.f'] = "{!! __('app.bethistory.maindata.payment_type.FPX') !!}";
 	}
 
@@ -200,7 +200,7 @@
                 row.cells[fieldStatus].innerHTML = "";
                 row.cells[fieldStatus].innerHTML = locale['mainData.status.'+status];
 
-                if(status == 'p')
+                if(status == 'n')
                 {
                     row.cells[fieldStatus].style.color = "grey"
                 }
@@ -398,12 +398,12 @@
         </div>
     </div>
 
-    <div style="background:white;border-radius:5px; margin-top: 10px;">
+    <div style="background:white;border-radius:5px; margin-top: 10px; min-height: 80px">
         <div class="py-4 px-2">
 
-            	<div class="card">
+            	<div class="card" style="position: relative; border: none">
 
-		            <div id="main-spinner" class="card-body"></div>
+		            <i id="main-spinner" class="fa fa-spinner fa-spin fa-2x" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: black"></i>
 
 		            <div id="main-table" class="card-body" style="padding: 5px;"></div>
 

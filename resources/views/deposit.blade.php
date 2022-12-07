@@ -84,6 +84,17 @@
                 $(".amount").val(amt);
             });
         });
+
+        $('.bank-option').click(function()
+        {
+            $('.bank-option').removeClass('selected');
+            this.className += " selected";
+
+            $("#bank").val($(this).attr("data-id"));
+            $("#acc_name").val($(this).attr("data-name"));
+            $("#acc_no").val($(this).attr("data-acc"));
+            $("#amount").attr("placeholder", "Min:"+$(this).attr("data-min")+" | Max:"+$(this).attr("data-max"));
+        });
 	});
 
 
@@ -214,7 +225,7 @@
                     else
                     {
                         alert(locale['success']);
-                        window.location.href = "/my_profile/deposit/new?status";                        
+                        window.location.href = "/history";                        
                     }
                 }
                 else
@@ -371,19 +382,23 @@
 
                         <input type="hidden" value="d" name="type">
                         <input type="hidden" value="b" name="payment_type">
-                        <input type="hidden" value="{{$bankInfo[0]->id}}" name="admin_bank_id">
+                        <input type="hidden" value="{{$bankInfo[0]->id}}" id="bank" name="admin_bank_id">
 
                         <div class="form-group row" style="align-items: center">
                             <label class="col-sm-2 col-form-label">Deposit Channel:</label>
                             <div class="col-sm-10">
                                 <div style="display: flex">
-                                    <div class="mr-2 bank-option selected" style="cursor: pointer; padding: 5px;">
-                                        <img src="/images/payment/maybank.png" style="width: 70px;">
-                                    </div>
-
-                                    <div class="mr-2 bank-option" style="cursor: pointer;">
-                                        <img src="/images/payment/cimb.png" style="width: 70px;">
-                                    </div>
+                                    @foreach($bankInfo as $b)
+                                        @if($loop->index == 0)
+                                        <div class="mr-2 bank-option selected" style="cursor: pointer; padding: 5px;" data-id="{{$b->id}}" data-name="{{$b->name}}" data-acc="{{$b->acc_no}}" data-min="{{$b->min_deposit_amt}}" data-max="{{$b->max_deposit_amt}}">
+                                            <img src="/images/payment/{{$b->bank_img}}.png" style="width: 70px;">
+                                        </div>
+                                        @else
+                                        <div class="mr-2 bank-option" style="cursor: pointer; padding: 5px;" data-id="{{$b->id}}" data-name="{{$b->name}}" data-acc="{{$b->acc_no}}" data-min="{{$b->min_deposit_amt}}" data-max="{{$b->max_deposit_amt}}">
+                                            <img src="/images/payment/{{$b->bank_img}}.png" style="width: 70px;">
+                                        </div>
+                                        @endif
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -391,27 +406,27 @@
                         <div class="form-group row" style="align-items: center">
                             <label class="col-sm-2 col-form-label">Bank Details:</label>
                             <div class="col-sm-3" style="position: relative;">
-                                <input class="" type="text" value="{{$bankInfo[0]->name}}" name="acc_name" disabled style="width: 100%">
+                                <input class="" type="text" value="{{$bankInfo[0]->name}}" id="acc_name" name="acc_name" disabled style="width: 100%">
                                 <i class="fa fa-copy" id="fa-copy-bank" style="color: #000; position: absolute; top: 50%; right: 10%; transform: translateY(-50%); cursor: pointer"></i>
                             </div>
 
                             <div class="col-sm-3" style="position: relative;">
-                                <input class="" type="text" value="{{$bankInfo[0]->acc_no}}" name="acc_no" disabled  style="width: 100%">
+                                <input class="" type="text" value="{{$bankInfo[0]->acc_no}}" id="acc_no" name="acc_no" disabled  style="width: 100%">
                                 <i class="fa fa-copy" id="fa-copy-bankacc" style="color: #000; position: absolute; top: 50%; right: 10%; transform: translateY(-50%); cursor: pointer"></i>
                             </div>
                         </div>
 
                         <div class="form-group row" style="align-items: center">
                             <label class="col-sm-2 col-form-label">Amount:</label>
-                            <div class="col-sm-10">
-                                <input name="amount" type="number" placeholder="Min. deposit: 50">
+                            <div class="col-sm-3">
+                                <input name="amount" type="number" id="amount" placeholder="Min:{{$bankInfo[0]->min_deposit_amt}} | Max:{{$bankInfo[0]->max_deposit_amt}}" style="width:100%;">
                             </div>
                         </div>
 
                         <div class="form-group row" style="align-items: center">
                             <label class="col-sm-2 col-form-label">Promotion:</label>
                             <div class="col-sm-10">
-                                <select class="" id="promotion">
+                                <select class="" id="promo_id">
                                     <option value="" style="width:13px;">No, thanks</option>
                                     @foreach($promoList as $p)
                                     <option value="{{$p->promo_id}}" style="width:13px;">{{ $p->promo_name }}</option>
@@ -423,7 +438,7 @@
                         <div class="form-group row" style="align-items: center">
                             <label class="col-sm-2 col-form-label">Upload Receipt:</label>
                             <div class="col-sm-10">
-                                <input type="file" id="img" name="img" accept="image/*">
+                                <input type="file" id="img" name="img" accept="image/*" style='color: #000'>
                             </div>
                         </div>
 

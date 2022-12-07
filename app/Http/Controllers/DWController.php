@@ -97,8 +97,6 @@ class DWController extends Controller
 
         try
         {
-            
-
             $secretKey = env('PAYMENTGATEWAY_SECRETKEY');
             $type = $request->type;
             $amount = $request->amount;
