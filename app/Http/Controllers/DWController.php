@@ -181,7 +181,7 @@ class DWController extends Controller
                     //check member have pending promotion or not 
                     $db = DB::select("
                             SELECT status
-                            FROM promo_turnover_txn
+                            FROM member_promo_turnover
                             WHERE status = 'p'
                             AND member_id = ?
                             ",[$userId]

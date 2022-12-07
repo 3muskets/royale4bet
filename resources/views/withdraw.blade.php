@@ -82,7 +82,7 @@
                 if(data.status == 1)
                 {
                     alert(locale['success']);
-                    window.location.href = "/my_profile/withdraw/new?status";
+                    window.location.href = "/history";
                 }
                 else
                 {
@@ -256,9 +256,12 @@
 
                     <input type="hidden" value="w" name="type">
                     <input type="hidden" value="b" name="payment_type">
+                    <input type="hidden" value="{{$bankInfo[0]->bank}}" name="bank">
+                    <input type="hidden" value="{{$bankInfo[0]->name}}" name="acc_name">
+                    <input type="hidden" value="{{$bankInfo[0]->acc_no}}" name="acc_no">
 
-                    <div class="form-group row" style="align-items: center">
-                        <label class="col-sm-2 col-form-label">Deposit Channel:</label>
+<!--                     <div class="form-group row" style="align-items: center">
+                        <label class="col-sm-2 col-form-label">Withdrawal Channel:</label>
                         <div class="col-sm-10">
                             <div style="display: flex">
                                 <div class="mr-2 bank-option selected" style="cursor: pointer; padding: 5px;">
@@ -270,13 +273,13 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="form-group row" style="align-items: center">
                         <label class="col-sm-2 col-form-label">Bank Details:</label>
 
                         <div class="col-sm-3" style="position: relative;">
-                            <input class="" type="text" value="{{$bankInfo[0]->bank}}" name="bank" disabled style="width: 100%">
+                            <input class="" type="text" value="{{$bankInfo[0]->bank}}" disabled style="width: 100%">
    
                         </div>
 
@@ -285,7 +288,7 @@
                     <div class="form-group row" style="align-items: center">
                         <label class="col-sm-2 col-form-label"></label>
                         <div class="col-sm-3" style="position: relative;">
-                            <input class="" type="text" value="{{$bankInfo[0]->name}}" name="acc_name" disabled style="width: 100%">
+                            <input class="" type="text" value="{{$bankInfo[0]->name}}" disabled style="width: 100%">
     
                         </div>
                     </div>
@@ -293,7 +296,7 @@
                     <div class="form-group row" style="align-items: center">
                         <label class="col-sm-2 col-form-label"></label>
                         <div class="col-sm-3" style="position: relative;">
-                            <input class="" type="text" value="{{$bankInfo[0]->acc_no}}" name="acc_no" disabled  style="width: 100%">
+                            <input class="" type="text" value="{{$bankInfo[0]->acc_no}}" disabled  style="width: 100%">
           
                         </div>
                     </div>
