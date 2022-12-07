@@ -174,6 +174,45 @@ class UserController extends Controller
         }
     }
 
+    public static function getMainBanner()
+    {
+        try
+        {
+            $db = DB::select("SELECT image, sequence
+                                FROM cms
+                                WHERE type = 1
+                                AND start_date <= NOW()
+                                AND end_date >= NOW()
+                                ORDER BY sequence ASC");
+
+            return $db;
+        }
+        catch(\Exception $e)
+        {
+            log::debug($e);
+
+            return [];
+        }
+    }
+
+    public static function getPopupBanner()
+    {
+        try
+        {
+            $db = DB::select("SELECT image
+                                FROM cms
+                                WHERE type = 2"
+                            );
+
+            return $db;
+        }
+        catch(\Exception $e)
+        {
+            log::debug($e);
+
+            return [];
+        }
+    }
 
     public static function getPromoList()
     {

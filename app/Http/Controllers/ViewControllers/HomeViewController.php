@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ViewControllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Helper;
+use App\Http\Controllers\UserController;
 use Auth;
 use DB;
 use Log;
@@ -28,7 +29,10 @@ class HomeViewController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $mainBanner = UserController::getMainBanner();
+        $popupBanner = UserController::getPopupBanner();
+
+        return view('home')->with(['mainBanner' => $mainBanner, 'popupBanner' => json_encode($popupBanner)]);
     }
 
     public function aboutUs()

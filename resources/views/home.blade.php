@@ -2,6 +2,40 @@
 
 @section('head')
 
+<script type="text/javascript">
+	$(document).ready(function()
+	{
+		var popup = JSON.parse(@json($popupBanner));
+
+		for(var i = 0; i < popup.length; i++)
+		{
+			var div = document.createElement('div');
+			div.id = "popup";
+			div.setAttribute("style", "width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index:999; display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0;");
+
+			var imgContainer = document.createElement("div");
+			imgContainer.style.position = "relative";
+
+			var img = document.createElement("img");
+			img.src = popup[i]['image'];
+
+			var closeBtn = document.createElement("div");
+			closeBtn.setAttribute("style", "position:absolute; top: 0; right: 0; color: #fff; cursor: pointer; background: black; padding: 0 5px;");
+			closeBtn.innerHTML = "Close [X]";
+			closeBtn.onclick = function()
+			{
+				$("#popup").remove();
+			}
+
+			imgContainer.appendChild(img);
+			imgContainer.appendChild(closeBtn);
+			div.appendChild(imgContainer);
+
+			$('body').append(div);
+		}
+	});
+</script>
+
 <style type="text/css">
 	
 	.section-title
@@ -231,22 +265,26 @@
 <div id="carouselBanner" class="carousel slide multi-item-carousel my-2" data-ride="carousel">
 
 	<div class="carousel-inner">
-		<div class="carousel-item active">
-			<div>
-				<img class="w-100" src="/images/home/banner/1.jpg">
+		@foreach($mainBanner as $banner)
+			@if($banner->sequence == 1)
+			<div class="carousel-item active">
+				<div>
+					<img class="w-100" src="{{$banner->image}}">
+				</div>
 			</div>
-		</div>
-
-		<div class="carousel-item">
-			<div>
-				<img class="w-100" src="/images/home/banner/2.jpg">
+			@else
+			<div class="carousel-item">
+				<div>
+					<img class="w-100" src="{{$banner->image}}">
+				</div>
 			</div>
-		</div>
-		<div class="carousel-item">
-			<div>
-				<img class="w-100" src="/images/home/banner/4.jpg">
+			<div class="carousel-item">
+				<div>
+					<img class="w-100" src="{{$banner->image}}">
+				</div>
 			</div>
-		</div>
+			@endif
+		@endforeach
 	</div>
 
 	<a class="carousel-control-prev" href="#carouselBanner" role="button" data-slide="prev">
