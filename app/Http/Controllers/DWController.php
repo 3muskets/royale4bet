@@ -202,47 +202,6 @@ class DWController extends Controller
             }
 
 
-            if($promoId == 1)
-            {
-                //check user is it deposit before
-                $db = DB::select("
-                    SELECT amount
-                    FROM member_dw
-                    WHERE status = 'a'
-                    AND type = 'd'
-                    AND member_id = ?
-                    ",[$userId]);
-
-                if(sizeof($db) != 0)
-                {
-                    array_push($errMsg,'Invalid Promotion,This Promotion Only For First Time User');
-                }
-
-            }  
-            //Daily Bonus
-            else if($promoId == 2)
-            {
-
-                $todayDate = NOW();
-                $todayStartDate = date('Y-m-d 00:00:00',strtotime($todayDate. '+8 hours'));
-                $todayEndDate = date('Y-m-d 23:59:59',strtotime($todayDate. '+8 hours'));
-
-                $db = DB::select("
-                        SELECT id
-                        FROM member_dw
-                        WHERE status = 'a'
-                        AND member_id = ? AND promo_id = 2
-                        AND (created_at + INTERVAL 8 HOUR) >= ?
-                        AND (created_at + INTERVAL 8 HOUR) <= ?
-                        ",[$userId,$todayStartDate,$todayEndDate]
-                    );
-
-                if(sizeof($db) != 0)
-                {
-                    array_push($errMsg,'Invalid Promotion,This Promotion Only Can Apply Once By Day');
-                }
-            }     
-
             //if request promo,checking still have pending promotion or not
             if($promoId != '')
             {
@@ -254,9 +213,11 @@ class DWController extends Controller
                     ",[$userId]
                 );
 
-                if(sizeof($db) != 0)
+                $statusPromo = self::checkPromo($promoId);
+
+                if(sizeof($db) != 0 || $statusPromo == false)
                 {
-                    array_push($errMsg,'Invalid Promotion,Please Complete Your Promotion');
+                    array_push($errMsg,'Invalid Promotion');
                 }
             }
 
@@ -803,6 +764,9 @@ class DWController extends Controller
         return $walletAddr;
     }
 
+
+
+
     public static function getPendingCount()
     {
         try
@@ -827,6 +791,94 @@ class DWController extends Controller
             return 0;
         }
     }
+
+    public static function checkPromo($promoId)
+    {
+        try
+        {
+
+            $todayDate = NOW();
+            $todayStartDate = date('Y-m-d 00:00:00',strtotime($todayDate. '+8 hours'));
+            $todayEndDate = date('Y-m-d 23:59:59',strtotime($todayDate. '+8 hours'));
+            $prevWeekDate = date('Y-m-d 00:00:00',strtotime($todayDate. '-7days +8 hours'));
+            $prevMonthDate = date('Y-m-d 00:00:00',strtotime($todayDate. '-1months +8 hours'));
+
+            $memberId = Auth::id();
+
+            //get promotion type
+            $db = DB::select("
+                    SELECT type
+                    FROM promo_setting
+                    WHERE promo_id = ? AND status = 'a'
+                    AND start_date <= ?
+                    AND end_date >= ?
+                    ",[$promoId
+                      ,$todayStartDate
+                      ,$todayStartDate
+                    ]);
+
+            if(sizeof($db) == 0)
+            {
+                return false;
+            }
+
+            $type = $db[0]->type;
+
+            if($type == 'd')
+                $startDate = $todayStartDate;
+            else if($type == 'w')
+                $startDate = $prevWeekDate;
+            else if($type == 'm')
+                $startDate = $prevMonthDate;
+
+            if($type == 'f')
+            {
+                //if type for first time 
+                $db = DB::select("
+                    SELECT id
+                    FROM member_dw
+                    WHERE member_id = ?
+                    AND promo_id = ?
+                    ",[$memberId,$promoId]);
+
+                if(sizeof($db) == 0)
+                {
+                    return true;
+                }
+            }
+            else if($type == 'd' || $type == 'w' || $type == 'm')
+            {
+
+                $db = DB::select("
+                    SELECT id
+                    FROM member_dw
+                    WHERE member_id= ? AND promo_id = ?
+                    AND status = 'a'
+                    AND (created_at + INTERVAL 8 HOUR) >= ?
+                    AND (created_at + INTERVAL 8 HOUR) <= ?
+                    ",[$memberId
+                       ,$promoId
+                       ,$startDate
+                       ,$todayEndDate
+                    ]); 
+
+
+                if(sizeof($db) == 0)
+                {
+                    return true;
+                }               
+            }
+
+
+            return false;
+        }
+        catch(\Exception $e)
+        {
+            Log::debug($e);
+            return false;
+        }
+    }
+    
 
     public static function getOptionsType()
     {

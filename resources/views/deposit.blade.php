@@ -382,7 +382,7 @@
 
                         <input type="hidden" value="d" name="type">
                         <input type="hidden" value="b" name="payment_type">
-                        <input type="hidden" value="{{$bankInfo[0]->bank_id}}" id="bank" name="admin_bank_id">
+                        <input type="hidden" value="{{$bankInfo[0]->id}}" id="bank" name="admin_bank_id">
 
                         <div class="form-group row" style="align-items: center">
                             <label class="col-sm-2 col-form-label">Deposit Channel:</label>
@@ -390,11 +390,11 @@
                                 <div style="display: flex">
                                     @foreach($bankInfo as $b)
                                         @if($loop->index == 0)
-                                        <div class="mr-2 bank-option selected" style="cursor: pointer; padding: 5px;" data-id="{{$b->bank_id}}" data-name="{{$b->name}}" data-acc="{{$b->acc_no}}" data-min="{{$b->min_deposit_amt}}" data-max="{{$b->max_deposit_amt}}">
+                                        <div class="mr-2 bank-option selected" style="cursor: pointer; padding: 5px;" data-id="{{$b->id}}" data-name="{{$b->name}}" data-acc="{{$b->acc_no}}" data-min="{{$b->min_deposit_amt}}" data-max="{{$b->max_deposit_amt}}">
                                             <img src="/images/payment/{{$b->bank_img}}.png" style="width: 70px;">
                                         </div>
                                         @else
-                                        <div class="mr-2 bank-option" style="cursor: pointer; padding: 5px;" data-id="{{$b->bank_id}}" data-name="{{$b->name}}" data-acc="{{$b->acc_no}}" data-min="{{$b->min_deposit_amt}}" data-max="{{$b->max_deposit_amt}}">
+                                        <div class="mr-2 bank-option" style="cursor: pointer; padding: 5px;" data-id="{{$b->id}}" data-name="{{$b->name}}" data-acc="{{$b->acc_no}}" data-min="{{$b->min_deposit_amt}}" data-max="{{$b->max_deposit_amt}}">
                                             <img src="/images/payment/{{$b->bank_img}}.png" style="width: 70px;">
                                         </div>
                                         @endif
@@ -426,7 +426,7 @@
                         <div class="form-group row" style="align-items: center">
                             <label class="col-sm-2 col-form-label">Promotion:</label>
                             <div class="col-sm-10">
-                                <select class="" id="promo_id">
+                                <select class="" id="promo_id" name="promo_id">
                                     <option value="" style="width:13px;">No, thanks</option>
                                     @foreach($promoList as $p)
                                     <option value="{{$p->promo_id}}" style="width:13px;">{{ $p->promo_name }}</option>
