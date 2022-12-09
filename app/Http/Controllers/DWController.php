@@ -839,6 +839,7 @@ class DWController extends Controller
                     FROM member_dw
                     WHERE member_id = ?
                     AND promo_id = ?
+                    AND status = 'a'
                     ",[$memberId,$promoId]);
 
                 if(sizeof($db) == 0)

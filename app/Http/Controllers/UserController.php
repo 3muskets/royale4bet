@@ -297,12 +297,13 @@ class UserController extends Controller
                     LEFT JOIN                     
                     (SELECT promo_id,MAX(created_at) 'created_at',member_id,status
                      FROM member_dw 
-                     WHERE member_id = ?
+                     WHERE member_id = ? and status = 'a'
                      GROUP BY promo_id,member_id,status
                     ) AS b 
                     ON a.promo_id = b.promo_id
                     WHERE a.type = 'f' AND a.status = 'a'
                     AND a.start_date <= ? AND a.end_date >= ?
+                    AND (b.promo_id IS NULL AND b.status IS NULL)
                     GROUP BY a.promo_id
                 ) as a 
                 ORDER BY a.promo_id
