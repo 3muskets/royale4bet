@@ -198,7 +198,8 @@ class UserController extends Controller
         {
             $db = DB::select("SELECT image
                                 FROM cms
-                                WHERE type = 2"
+                                WHERE type = 2
+                                AND status = 'a'"
                             );
 
             return $db;
