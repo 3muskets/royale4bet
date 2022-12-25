@@ -152,8 +152,10 @@
 
 
             //restore main wallet
-            $("#restore-btn").click(function(e)
+            $(".restore-btn").click(function(e)
             {
+                $('.restore-btn .fa-spin').show();
+
                 e.preventDefault();
 
                 $.ajax({
@@ -162,6 +164,10 @@
                     success: function(data)
                     {
 
+                    },
+                    complete: function(data)
+                    {
+                        $('.restore-btn .fa-spin').hide();
                     }
                 });
             });
@@ -852,6 +858,15 @@
 </head>
 <body>
 
+    <a target="_blank" href="https://wa.me/01139714620">
+        <img class="d-none d-md-block" src="/images/home/icon-whatsapp-green.png" style="position: fixed; bottom: 2%; left: 2%; width: 50px; z-index: 9999">
+    </a>
+
+    <a target="_blank" href="https://wa.me/01139714620">
+        <img class="d-block d-md-none" src="/images/home/icon-whatsapp-green.png" style="position: fixed; bottom: 10%; left: 3%; width: 50px; z-index: 9999">
+    </a>
+
+
     <audio id="audioAlert">
         <source src="/audio/ogg/definite.ogg" type="audio/ogg">
         <source src="/audio/mpeg/definite.mp3" type="audio/mpeg">
@@ -865,7 +880,11 @@
                     <span class="fa fa-volume-up pl-2 py-0" style="font-size:16px">&nbsp;</span>
                 </td>
                 <td class="">
-                    <div class="marquee"><p>Special Announcement : Bookmark your fortune now.</p></div>
+                    <div class="marquee">
+                        @foreach($marquee as $m)
+                        <p>{{$m->text}}</p>
+                        @endforeach
+                    </div>
                 </td>
                 <td class="timer" style="width:135px;color:#9be1ff;">
                     <div id="current-time" style="font-size:12px;padding-left: 15px;font-weight: bold">&nbsp;</div>
@@ -974,7 +993,7 @@
                 <div>{{ __('app.header.welcome') }}, {{ Auth::user()->username }}</div>
                 <span>{{ __('app.header.balance') }} : {{ $userCurrency }}</span>
                 <span id="balance">{{ Helper::formatMoney($userBalance) }}</span>
-                <div id="restore-btn" style="background: url('/images/app/more/wallet.png'); background-repeat: round; height: 50px; display: flex; align-items: center; justify-content: center; margin-top: 10px; cursor: pointer;">
+                <div class="restore-btn" id="restore-btn" style="background: url('/images/app/more/wallet.png'); background-repeat: round; height: 50px; display: flex; align-items: center; justify-content: center; margin-top: 10px; cursor: pointer;">
                     <span style="margin-left: 30px;">RESTORE <i class="fa fa-spin fa-spinner" style="display: none"></i></span>
                 </div>
             </div>
@@ -1264,7 +1283,7 @@
                             </a>
                         </div>
                         <div>
-                            <a href="/" class="footerfixed-link" style="">
+                            <a href="/my_profile/deposit/new?bank" class="footerfixed-link" style="">
                                 <div class="d-flex align-items-center flex-column" style="">
                                     <img src="/images/app/vip.png" style="height:40px;">
                                     <span><center>DEPOSIT</center></span>
@@ -1288,7 +1307,7 @@
                 <td style="width:50%;">
                     <div class="d-flex justify-content-around align-items-center" style="">
                         <div>
-                            <a href="/" class="footerfixed-link" style="">
+                            <a href="/promo" class="footerfixed-link" style="">
                                 <div class="d-flex align-items-center flex-column" style="">
                                     <img src="/images/app/footer/promos.png" style="height:40px;">
                                     <span><center>PROMOS</center></span>
@@ -1334,6 +1353,11 @@
                 <div>{{ __('app.header.welcome') }}, {{ Auth::user()->username }}</div>
                 <span>{{ __('app.header.balance') }} : {{ $userCurrency }}</span>
                 <span id="balance">{{ Helper::formatMoney($userBalance) }}</span>
+                <div class="d-block d-md-none">
+                    <div class="restore-btn" id="restore-btn" style="background: url('/images/app/more/wallet.png'); background-repeat: round; height: 40px; display: flex; align-items: center; justify-content: center; margin-top: 10px; cursor: pointer; width: 120px; height: 40px; background-size: 120px 40px;">
+                        <span style="margin-left: 30px;">RESTORE <i class="fa fa-spin fa-spinner" style="display: none"></i></span>
+                    </div>
+                </div>
             </div>
 
             <div class="container">
